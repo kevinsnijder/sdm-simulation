@@ -4,7 +4,10 @@ using System.Collections.Generic;
 
 public class FollowPath : MonoBehaviour
 {
-    private MqttHandler mqttHandler;
+    private SensorManager sensorManager;
+    private TrafficLightManager aaa;
+    private string pathName;
+    private bool pauseDriving = false;
 
     #region Enums
     public enum MovementType  //Type of Movement
@@ -29,7 +32,11 @@ public class FollowPath : MonoBehaviour
     #region Main Methods
     public void Start()
     {
-        this.mqttHandler = MqttHandler.Instance;
+        this.sensorManager = SensorManager.Instance;
+        this.aaa = TrafficLightManager.Instance;
+
+        this.pathName = MyPath.name;
+
         //Make sure there is a path assigned
         if (MyPath == null)
         {
@@ -39,10 +46,8 @@ public class FollowPath : MonoBehaviour
 
         //Sets up a reference to an instance of the coroutine GetNextPathPoint
         pointInPath = MyPath.GetNextPathPoint();
-        Debug.Log(pointInPath.Current);
         //Get the next point in the path to move to (Gets the Default 1st value)
         pointInPath.MoveNext();
-        Debug.Log(pointInPath.Current);
 
         //Make sure there is a point to move to
         if (pointInPath.Current == null)
@@ -54,55 +59,66 @@ public class FollowPath : MonoBehaviour
         //Set the position of this object to the position of our starting point
         transform.position = pointInPath.Current.position;
     }
-     
+
     //Update is called by Unity every frame
     public void Update()
     {
-        //Validate there is a path with a point in it
-        if (pointInPath == null || pointInPath.Current == null)
+        if (!pauseDriving)
         {
-            Debug.Log("No path is found");
-            return; //Exit if no path is found
-        }
-
-        if (Type == MovementType.MoveTowards) //If you are using MoveTowards movement type
-        {
-            //Move to the next point in path using MoveTowards
-            transform.position =
-                Vector3.MoveTowards(transform.position,
-                                    pointInPath.Current.position,
-                                    Time.deltaTime * Speed);
-        }
-        else if (Type == MovementType.LerpTowards) //If you are using LerpTowards movement type
-        {
-            //Move towards the next point in path using Lerp
-            transform.position = Vector3.Lerp(transform.position,
-                                                pointInPath.Current.position,
-                                                Time.deltaTime * Speed);
-        }
-
-        //Check to see if you are close enough to the next point to start moving to the following one
-        //Using Pythagorean Theorem
-        //per unity suaring a number is faster than the square root of a number
-        //Using .sqrMagnitude 
-        var distanceSquared = (transform.position - pointInPath.Current.position).sqrMagnitude;
-        if (distanceSquared < MaxDistanceToGoal * MaxDistanceToGoal) //If you are close enough
-        {
-
-            if (pointInPath.Current.name.ToLower() == "sensor0" || pointInPath.Current.name.ToLower() == "sensor1")
+            //Validate there is a path with a point in it
+            if (pointInPath == null || pointInPath.Current == null)
             {
-                mqttHandler.Publish("sensor", "Sensor hit:" + pointInPath.Current.name);
+                Debug.Log("No path is found");
+                return; //Exit if no path is found
             }
-            pointInPath.MoveNext(); //Get next point in MovementPath
+
+            var currentNode = pointInPath.Current;
+
+            if (Type == MovementType.MoveTowards) //If you are using MoveTowards movement type
+            {
+                //Move to the next point in path using MoveTowards
+                transform.position =
+                    Vector3.MoveTowards(transform.position,
+                                        currentNode.position,
+                                        Time.deltaTime * Speed);
+            }
+            else if (Type == MovementType.LerpTowards) //If you are using LerpTowards movement type
+            {
+                //Move towards the next point in path using Lerp
+                transform.position = Vector3.Lerp(transform.position,
+                                                    currentNode.position,
+                                                    Time.deltaTime * Speed);
+            }
+
+
+            var distanceSquared = (transform.position - currentNode.position).sqrMagnitude;
+            if (distanceSquared < MaxDistanceToGoal * MaxDistanceToGoal) //If you are close enough
+            {
+                string currentSensorName = currentNode.name.ToLower();
+                if (currentSensorName == "sensor0" || currentSensorName == "sensor1")
+                {
+                    int sensor;
+                    if (currentSensorName == "sensor0")
+                    {
+                        sensor = 0;
+                    }
+                    else
+                    {
+                        sensor = 1;
+                    }
+
+                    // && als het stoplicht op rood staat OF er een auto voor je stil staat (dus licht aan + 1e sensor ingedrukt)
+                    sensorManager.UpdateSensor(currentNode.parent.parent.name + "/" + pathName, sensor, 1);
+                    if (currentSensorName == "sensor0")
+                    {
+                        pauseDriving = true; // debug stop car
+                        aaa.UpdateLight(currentNode.parent.parent.name + "/" + pathName, TrafficLightStatus.Green);
+                    }
+
+                }
+                pointInPath.MoveNext(); //Get next point in MovementPath
+            }
         }
-        //The version below uses Vector3.Distance same as Vector3.Magnitude which includes (square root)
-        /*
-        var distanceSquared = Vector3.Distance(transform.position, pointInPath.Current.position);
-        if (distanceSquared < MaxDistanceToGoal) //If you are close enough
-        {
-            pointInPath.MoveNext(); //Get next point in MovementPath
-        }
-        */
     }
     #endregion //Main Methods
 

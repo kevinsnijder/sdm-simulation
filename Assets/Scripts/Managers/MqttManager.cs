@@ -6,27 +6,28 @@ using UnityEngine;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
-public class MqttHandler : MonoBehaviour
+public class MqttManager : MonoBehaviour
 {
     public string brokerHostname = "arankieskamp.com";
     public int teamId = 10;
 
+
     private MqttClient client;
 
     #region SINGLETON PATTERN
-    public static MqttHandler _instance;
-    public static MqttHandler Instance
+    public static MqttManager _instance;
+    public static MqttManager Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = GameObject.FindObjectOfType<MqttHandler>();
+                _instance = GameObject.FindObjectOfType<MqttManager>();
 
                 if (_instance == null)
                 {
                     GameObject container = new GameObject("MqttSingleton");
-                    _instance = container.AddComponent<MqttHandler>();
+                    _instance = container.AddComponent<MqttManager>();
                 }
             }
 
@@ -44,6 +45,12 @@ public class MqttHandler : MonoBehaviour
         byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE };
         client.Subscribe(new string[] { teamId + "/#" }, qosLevels);
         Publish("connect", "Simulation Online");
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     private void Connect()
@@ -64,21 +71,16 @@ public class MqttHandler : MonoBehaviour
 
     void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
-        string msg = System.Text.Encoding.UTF8.GetString(e.Message);
-        Debug.Log("Received message from " + e.Topic + " : " + msg);
+        string msg = Encoding.UTF8.GetString(e.Message);
+        //Debug.Log("Received message from " + e.Topic + " : " + msg);
     }
 
     public void Publish(string _topic, string msg)
     {
-        Debug.Log("Publishing message: \"" + msg + "\" to  \"/" + teamId + "/" + _topic + "\"");
+        string topic = teamId + "/" + _topic;
+        Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic + "\"");
         client.Publish(
-            teamId + "/" + _topic, Encoding.UTF8.GetBytes(msg),
+            topic, Encoding.UTF8.GetBytes(msg),
             MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

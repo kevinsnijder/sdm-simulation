@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 public class FollowPath : MonoBehaviour
 {
     private SensorManager sensorManager;
-    private TrafficLightManager aaa;
+    private TrafficLightManager trafficLightManager;
     private string pathName;
     private bool pauseDriving = false;
 
@@ -21,6 +22,7 @@ public class FollowPath : MonoBehaviour
     public MovementType Type = MovementType.MoveTowards; // Movement type used
     public MovementPath MyPath; // Reference to Movement Path Used
     public float Speed = 1; // Speed object is moving
+    public float RotationSpeedMultiplier = 7; // Easing rotations
     public float MaxDistanceToGoal = .1f; // How close does it have to be to the point to be considered at point
     #endregion //Public Variables
 
@@ -33,7 +35,7 @@ public class FollowPath : MonoBehaviour
     public void Start()
     {
         this.sensorManager = SensorManager.Instance;
-        this.aaa = TrafficLightManager.Instance;
+        this.trafficLightManager = TrafficLightManager.Instance;
 
         this.pathName = MyPath.name;
 
@@ -63,7 +65,20 @@ public class FollowPath : MonoBehaviour
     //Update is called by Unity every frame
     public void Update()
     {
-        if (!pauseDriving)
+        if (pauseDriving)
+        {
+            string lightname = pointInPath.Current.parent.parent.name + "/" + pathName;
+            if(trafficLightManager.CheckLightStatus(lightname) == TrafficLightStatus.Green)
+            {
+                pauseDriving = false;
+            }
+            else
+            {
+                Thread.Sleep(1000);
+                trafficLightManager.UpdateMotorizedLight(lightname, TrafficLightStatus.Green);
+            }
+        }
+        else
         {
             //Validate there is a path with a point in it
             if (pointInPath == null || pointInPath.Current == null)
@@ -73,6 +88,7 @@ public class FollowPath : MonoBehaviour
             }
 
             var currentNode = pointInPath.Current;
+
 
             if (Type == MovementType.MoveTowards) //If you are using MoveTowards movement type
             {
@@ -89,6 +105,10 @@ public class FollowPath : MonoBehaviour
                                                     currentNode.position,
                                                     Time.deltaTime * Speed);
             }
+            Vector3 vectorToTarget = currentNode.position - transform.position;
+            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
+            Quaternion q = Quaternion.AngleAxis(angle-90, Vector3.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * (Speed*RotationSpeedMultiplier));
 
 
             var distanceSquared = (transform.position - currentNode.position).sqrMagnitude;
@@ -107,13 +127,18 @@ public class FollowPath : MonoBehaviour
                         sensor = 1;
                     }
 
+                    string lightName = currentNode.parent.parent.name + "/" + pathName;
                     // && als het stoplicht op rood staat OF er een auto voor je stil staat (dus licht aan + 1e sensor ingedrukt)
-                    sensorManager.UpdateSensor(currentNode.parent.parent.name + "/" + pathName, sensor, 1);
-                    if (currentSensorName == "sensor0")
+                    if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red)
                     {
-                        pauseDriving = true; // debug stop car
-                        aaa.UpdateLight(currentNode.parent.parent.name + "/" + pathName, TrafficLightStatus.Green);
+                        if (currentSensorName == "sensor0")
+                        {
+                            sensorManager.UpdateSensor(lightName, sensor, 1);
+
+                            pauseDriving = true; // debug stop car
+                        }
                     }
+                    
 
                 }
                 pointInPath.MoveNext(); //Get next point in MovementPath

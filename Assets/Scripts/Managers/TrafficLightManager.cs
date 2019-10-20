@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TrafficLightManager : MonoBehaviour
 {
+    List<TrafficLight> lights = new List<TrafficLight>(){ new TrafficLight() { Name = "motorised/6", Status = TrafficLightStatus.Red } };
+
     #region SINGLETON PATTERN
     public static TrafficLightManager _instance;
     public static TrafficLightManager Instance
@@ -45,14 +47,50 @@ public class TrafficLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. motorised/6</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateLight(string lightName, TrafficLightStatus status)
+    internal void UpdateMotorizedLight(string lightName, TrafficLightStatus status)
     {
+        int lightNumber = lights.FindIndex(a => a.Name == lightName);
+
+        TrafficLight light = lights[lightNumber];
+        if (light == null)
+        {
+            throw new Exception("Light does not exist");
+        }
+
         var gameObject = GameObject.Find("TrafficLights/" + lightName);
-        Texture2D texture = (Texture2D)Resources.Load("Images/Lights/MotorizedGreen");
+        SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
-        var originalsprite = gameObject.GetComponent<SpriteRenderer>();
-        Sprite sprite = Sprite.Create(texture, originalsprite.sprite.rect, originalsprite.sprite.pivot, originalsprite.sprite.pixelsPerUnit);
+        switch (status)
+        {
+            case TrafficLightStatus.Green:
+                light.Status = TrafficLightStatus.Green;
+                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedGreen");
+                break;
+            case TrafficLightStatus.Red:
+                light.Status = TrafficLightStatus.Red;
+                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedRed");
+                break;
+            case TrafficLightStatus.Orange:
+                light.Status = TrafficLightStatus.Orange;
+                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedOrange");
+                break;
+            case TrafficLightStatus.Off:
+                light.Status = TrafficLightStatus.Off;
+                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedOff");
+                break;
+        }
+        lights[lightNumber] = light;
 
-        gameObject.GetComponent<Image>().overrideSprite = sprite;
+    }
+
+    internal TrafficLightStatus CheckLightStatus(string lightName)
+    {
+        TrafficLight light = lights.Find(a => a.Name == lightName);
+        if(light == null)
+        {
+            throw new Exception("Light does not exist");
+        }
+        Debug.Log("Light status: " + lightName + " " + light.Status);
+        return light.Status;
     }
 }

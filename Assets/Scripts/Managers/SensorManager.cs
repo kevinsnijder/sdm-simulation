@@ -44,7 +44,7 @@ public class SensorManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Broadcasts that a sensor is pressed or unpressed
     /// </summary>
     /// <param name="pathName"></param>
     /// <param name="sensor"></param>

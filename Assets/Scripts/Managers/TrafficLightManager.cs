@@ -90,7 +90,6 @@ public class TrafficLightManager : MonoBehaviour
         {
             throw new Exception("Light does not exist");
         }
-        Debug.Log("Light status: " + lightName + " " + light.Status);
         return light.Status;
     }
 }

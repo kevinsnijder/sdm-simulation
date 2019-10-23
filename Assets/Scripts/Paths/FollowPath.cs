@@ -37,14 +37,13 @@ public class FollowPath : MonoBehaviour
         this.sensorManager = SensorManager.Instance;
         this.trafficLightManager = TrafficLightManager.Instance;
 
-        this.pathName = MyPath.name;
-
         //Make sure there is a path assigned
         if (MyPath == null)
         {
             Debug.LogError("Movement Path cannot be null, I must have a path to follow.", gameObject);
             return;
         }
+        this.pathName = MyPath.name;
 
         //Sets up a reference to an instance of the coroutine GetNextPathPoint
         pointInPath = MyPath.GetNextPathPoint();
@@ -65,6 +64,7 @@ public class FollowPath : MonoBehaviour
     //Update is called by Unity every frame
     public void Update()
     {
+
         if (pauseDriving)
         {
             string lightname = pointInPath.Current.parent.parent.name + "/" + pathName;
@@ -74,8 +74,8 @@ public class FollowPath : MonoBehaviour
             }
             else
             {
-                Thread.Sleep(1000);
-                trafficLightManager.UpdateMotorizedLight(lightname, TrafficLightStatus.Green);
+                //Thread.Sleep(1000);
+                //trafficLightManager.UpdateMotorizedLight(lightname, TrafficLightStatus.Green);
             }
         }
         else
@@ -89,6 +89,9 @@ public class FollowPath : MonoBehaviour
 
             var currentNode = pointInPath.Current;
 
+
+            //if (Physics.Raycast(transform.position, currentNode.position, 10))
+            //    Debug.Log("There is something in front of the object!");
 
             if (Type == MovementType.MoveTowards) //If you are using MoveTowards movement type
             {
@@ -129,17 +132,16 @@ public class FollowPath : MonoBehaviour
 
                     string lightName = currentNode.parent.parent.name + "/" + pathName;
                     // && als het stoplicht op rood staat OF er een auto voor je stil staat (dus licht aan + 1e sensor ingedrukt)
-                    if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red)
+                    if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange)
                     {
-                        if (currentSensorName == "sensor0")
+                        if (sensor == 0)
                         {
                             sensorManager.UpdateSensor(lightName, sensor, 1);
 
                             pauseDriving = true; // debug stop car
                         }
-                    }
-                    
 
+                    }
                 }
                 pointInPath.MoveNext(); //Get next point in MovementPath
             }

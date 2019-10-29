@@ -6,11 +6,14 @@ using UnityEngine;
 public class ButtonPressListener : MonoBehaviour
 {
     TrafficSpawnManager trafficSpawnManager;
+    MqttManager mqttManager;
+
 
     // Start is called before the first frame update
     void Start()
     {
         this.trafficSpawnManager = TrafficSpawnManager.Instance;
+        this.mqttManager = MqttManager.Instance;
     }
 
     // Update is called once per frame
@@ -18,8 +21,15 @@ public class ButtonPressListener : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            print("space key was pressed");
             trafficSpawnManager.SpawnRandomCar();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            mqttManager.Publish("motorised/6/traffic_light/0", "2");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            mqttManager.Publish("motorised/8/traffic_light/0", "2");
         }
     }
 }

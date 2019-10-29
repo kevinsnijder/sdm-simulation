@@ -7,6 +7,9 @@ using UnityEngine;
 public class TrafficSpawnManager : MonoBehaviour
 {
     public GameObject CarPrefab;
+    public List<GameObject> CarPaths;
+    private System.Random rnd = new System.Random();
+
 
     #region SINGLETON PATTERN
     public static TrafficSpawnManager _instance;
@@ -34,19 +37,15 @@ public class TrafficSpawnManager : MonoBehaviour
         Debug.Log("Spawning car");
 
         var car = Instantiate(CarPrefab);
-        GameObject path = GameObject.Find("Paths/motorised/6");
-        MovementPath movementPath = path.GetComponent<MovementPath>();
-        movementPath.movingTo = 0;
-        movementPath.movementDirection = 1;
-        car.GetComponent<FollowPath>().MyPath = movementPath;
+
+        int r = rnd.Next(CarPaths.Count);
+
+        GameObject path = CarPaths[r];
+        PathLayout movementPath = path.GetComponent<PathLayout>();
+        car.GetComponent<Drive>().Path = movementPath;
+        car.transform.position = movementPath.PathSequence[0].position;
 
         Debug.Log("Created car at (" + car.transform.position.x + ", " + car.transform.position.y + ", " + car.transform.position.z + ")");
-        Debug.Log("Node positions:");
-        foreach (Transform c in car.GetComponent<FollowPath>().MyPath.PathSequence)
-        {
-            Debug.Log("(" + c.position.x + ", " + c.position.y + ", " + c.position.z + ")");
-        }
-
     }
     #endregion
 

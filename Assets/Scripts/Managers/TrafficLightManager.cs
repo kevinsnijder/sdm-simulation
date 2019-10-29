@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TrafficLightManager : MonoBehaviour
 {
-    List<TrafficLight> lights = new List<TrafficLight>(){ new TrafficLight() { Name = "motorised/6", Status = TrafficLightStatus.Red } };
+    List<TrafficLight> lights = new List<TrafficLight>(){ new TrafficLight() { Name = "motorised/6/traffic_light/0", Status = TrafficLightStatus.Red },
+    new TrafficLight() { Name = "motorised/8/traffic_light/0", Status = TrafficLightStatus.Red }};
 
     #region SINGLETON PATTERN
     public static TrafficLightManager _instance;
@@ -33,63 +35,61 @@ public class TrafficLightManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        foreach (TrafficLight light in lights)
+        {
+            if (light.UpdateRequired)
+            {
+                light.UpdateRequired = false;
+                var gameObject = GameObject.Find(light.Name);
+                SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+                switch (light.Status)
+                {
+                    case TrafficLightStatus.Green:
+                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedGreen");
+                        break;
+                    case TrafficLightStatus.Red:
+                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedRed");
+                        break;
+                    case TrafficLightStatus.Orange:
+                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedOrange");
+                        break;
+                    case TrafficLightStatus.Off:
+                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedOff");
+                        break;
+                }
+            }
+        }
     }
 
     /// <summary>
     /// Updates a light to the preferred status
     /// </summary>
-    /// <param name="lightName">Ex. motorised/6</param>
+    /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateMotorizedLight(string lightName, TrafficLightStatus status)
+    internal void UpdateMotorisedLight(string lightName, TrafficLightStatus status)
     {
-        int lightNumber = lights.FindIndex(a => a.Name == lightName);
-
-        TrafficLight light = lights[lightNumber];
-        if (light == null)
-        {
-            throw new Exception("Light does not exist");
-        }
-
-        var gameObject = GameObject.Find("TrafficLights/" + lightName);
-        SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-
-        switch (status)
-        {
-            case TrafficLightStatus.Green:
-                light.Status = TrafficLightStatus.Green;
-                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedGreen");
-                break;
-            case TrafficLightStatus.Red:
-                light.Status = TrafficLightStatus.Red;
-                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedRed");
-                break;
-            case TrafficLightStatus.Orange:
-                light.Status = TrafficLightStatus.Orange;
-                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedOrange");
-                break;
-            case TrafficLightStatus.Off:
-                light.Status = TrafficLightStatus.Off;
-                spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorizedOff");
-                break;
-        }
-        lights[lightNumber] = light;
-
+        lights.Find(a => a.Name == lightName).Status = status;
+        lights.Find(a => a.Name == lightName).UpdateRequired = true;
     }
 
+    /// <summary>
+    /// Gets the status of a light
+    /// </summary>
+    /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
+    /// <returns></returns>
     internal TrafficLightStatus CheckLightStatus(string lightName)
     {
         TrafficLight light = lights.Find(a => a.Name == lightName);
-        if(light == null)
+        if (light != null)
         {
-            throw new Exception("Light does not exist");
+            return light.Status;
         }
-        return light.Status;
+        return TrafficLightStatus.Off;
     }
 }

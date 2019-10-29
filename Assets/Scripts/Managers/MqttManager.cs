@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using uPLibrary.Networking.M2Mqtt;
@@ -10,6 +11,7 @@ public class MqttManager : MonoBehaviour
 {
     public string brokerHostname = "arankieskamp.com";
     public int teamId = 10;
+    private TrafficLightManager trafficLightManager;
 
 
     private MqttClient client;
@@ -39,6 +41,7 @@ public class MqttManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        trafficLightManager = TrafficLightManager.Instance;
         Debug.Log("Connecting to " + brokerHostname);
         Connect();
         client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
@@ -72,13 +75,21 @@ public class MqttManager : MonoBehaviour
     void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
         string msg = Encoding.UTF8.GetString(e.Message);
-        //Debug.Log("Received message from " + e.Topic + " : " + msg);
+        Debug.Log("Received message from " + e.Topic + " : " + msg);
+
+        string topic = e.Topic.Substring(e.Topic.IndexOf('/')+1);
+
+        // Check if its an update traffic statement
+        if (topic.IndexOf("traffic_light") != -1 && topic.IndexOf("motorised") != -1)
+        {
+            trafficLightManager.UpdateMotorisedLight(topic, (TrafficLightStatus)int.Parse(msg));
+        }
     }
 
     public void Publish(string _topic, string msg)
     {
         string topic = teamId + "/" + _topic;
-        Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic + "\"");
+        Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic);
         client.Publish(
             topic, Encoding.UTF8.GetBytes(msg),
             MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);

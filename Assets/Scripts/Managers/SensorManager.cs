@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class SensorManager : MonoBehaviour
@@ -34,7 +35,6 @@ public class SensorManager : MonoBehaviour
     void Start()
     {
         this.mqttManager = MqttManager.Instance;
-
     }
 
     // Update is called once per frame
@@ -52,5 +52,9 @@ public class SensorManager : MonoBehaviour
     internal void UpdateSensor(string pathName, int sensor, int sensorstatus)
     {
         mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor, sensorstatus.ToString());
+
+        //Thread.Sleep(1000);
+        //mqttManager.Publish(pathName.ToLower() + "/traffic_light/0", "2");
+
     }
 }

@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1619710859976463565}
   - component: {fileID: 1568568224533777843}
-  - component: {fileID: 1225050182316356983}
   - component: {fileID: 61055598189415114}
+  - component: {fileID: 114549137935966252}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -81,23 +81,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1225050182316356983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3599909773024791068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcad2b353c9c10744a7c90427a46f35e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 0
-  MyPath: {fileID: 0}
-  Speed: 1
-  RotationSpeedMultiplier: 7
-  MaxDistanceToGoal: 0.1
 --- !u!61 &61055598189415114
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -124,3 +107,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.94, y: 1.77}
   m_EdgeRadius: 0
+--- !u!114 &114549137935966252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3599909773024791068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 241045570d3dfa748811edad8ee70c36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: {fileID: 0}
+  MaxDistanceToGoal: 0.1
+  Speed: 1
+  RotationSpeedMultiplier: 7
+  CollisionDistance: 0.15

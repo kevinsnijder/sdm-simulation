@@ -12,7 +12,6 @@ public class Drive : MonoBehaviour
     public float MaxDistanceToGoal = .1f; // How close does it have to be to the point to be considered at point
     public float Speed = 7;
     public float RotationSpeedMultiplier = 7; // Easing rotations
-    private string PathName;
     private bool PauseDriving = false;
     public float CollisionDistance;
     private int CurrentTrafficLightId;
@@ -29,8 +28,6 @@ public class Drive : MonoBehaviour
             Debug.LogError("Movement Path cannot be null, I must have a path to follow.", gameObject);
             return;
         }
-
-        PathName = Path.name;
     }
 
     // Update is called once per frame
@@ -51,7 +48,8 @@ public class Drive : MonoBehaviour
             PauseDriving = true;
         }
 
-        string lightName = currentNode.parent.parent.parent.name + "/" + PathName + "/traffic_light/" + CurrentTrafficLightId;
+        string pathName = currentNode.parent.parent.parent.name + "/" + currentNode.parent.parent.name;
+        string lightName = currentNode.parent.parent.parent.parent.name + "/" + pathName + "/traffic_light/" + CurrentTrafficLightId;
 
         if (!PauseDriving)
         {
@@ -83,16 +81,20 @@ public class Drive : MonoBehaviour
                         sensor = 1;
                     }
 
-                    string sensorName = currentNode.parent.parent.parent.name + "/" + PathName;
+                    string sensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
+
                     sensorManager.UpdateSensor(sensorName, sensor, 1);
 
                     if(sensor == 0 && trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange)
                     {
+                        string previoussensorname = currentNode.parent.parent.parent.parent.name + "/" + pathName;
+                        sensorManager.UpdateSensor(previoussensorname, 1, 0);
                         PauseDriving = true;
                         return;
                     }
                     else if(sensor==0) // If the light is green -> Drive past the light and update for the possible next light
                     {
+                        sensorManager.UpdateSensor(sensorName, sensor, 0);
                         CurrentTrafficLightId++;
                     }
                 }

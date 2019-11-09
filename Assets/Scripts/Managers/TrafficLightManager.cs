@@ -7,8 +7,19 @@ using UnityEngine.UI;
 
 public class TrafficLightManager : MonoBehaviour
 {
-    List<TrafficLight> lights = new List<TrafficLight>(){ new TrafficLight() { Name = "motorised/6/traffic_light/0", Status = TrafficLightStatus.Red },
-    new TrafficLight() { Name = "motorised/8/traffic_light/0", Status = TrafficLightStatus.Red },new TrafficLight() { Name = "motorised/7/traffic_light/0", Status = TrafficLightStatus.Red }};
+    List<TrafficLight> lights = new List<TrafficLight>(){ 
+        new TrafficLight() { Name = "motorised/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/1/0/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/1/1/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/2/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/3/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/4/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/5/0/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/5/1/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/6/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/7/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/8/null/traffic_light/0", Status = TrafficLightStatus.Red }
+    };
 
     #region SINGLETON PATTERN
     public static TrafficLightManager _instance;
@@ -85,7 +96,7 @@ public class TrafficLightManager : MonoBehaviour
     /// <returns></returns>
     internal TrafficLightStatus CheckLightStatus(string lightName)
     {
-        TrafficLight light = lights.Find(a => a.Name == lightName);
+        TrafficLight light = lights.Find(a => a.Name == lightName.ToLower());
         if (light != null)
         {
             return light.Status;

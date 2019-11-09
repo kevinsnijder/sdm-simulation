@@ -75,7 +75,7 @@ public class MqttManager : MonoBehaviour
     void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
         string msg = Encoding.UTF8.GetString(e.Message);
-        Debug.Log("Received message from " + e.Topic + " : " + msg);
+        //Debug.Log("Received message from " + e.Topic + " : " + msg);
 
         string topic = e.Topic.Substring(e.Topic.IndexOf('/')+1);
 

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// Knows where vehicles can spawn
+/// </summary>
 public class TrafficSpawnManager : MonoBehaviour
 {
     public GameObject CarPrefab;

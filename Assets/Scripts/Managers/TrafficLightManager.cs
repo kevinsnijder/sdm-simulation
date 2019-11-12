@@ -5,9 +5,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages traffic light statuses and updates them with correct sprites
+/// </summary>
 public class TrafficLightManager : MonoBehaviour
 {
-    List<TrafficLight> motorisedLights = new List<TrafficLight>(){ 
+    List<TrafficLight> motorisedLights = new List<TrafficLight>(){ // Whoops hardcoded lights, gotta fix this some time
         new TrafficLight() { Name = "motorised/0/null/traffic_light/0", Status = LightStatus.Red },
         new TrafficLight() { Name = "motorised/1/0/traffic_light/0", Status = LightStatus.Red },
         new TrafficLight() { Name = "motorised/1/1/traffic_light/0", Status = LightStatus.Red },
@@ -18,7 +21,7 @@ public class TrafficLightManager : MonoBehaviour
         new TrafficLight() { Name = "motorised/5/1/traffic_light/0", Status = LightStatus.Red },
         new TrafficLight() { Name = "motorised/6/null/traffic_light/0", Status = LightStatus.Red },
         new TrafficLight() { Name = "motorised/7/null/traffic_light/0", Status = LightStatus.Red },
-        new TrafficLight() { Name = "motorised/8/null/traffic_light/0", Status = LightStatus.Red }
+        new TrafficLight() { Name = "motorised/8/null/traffic_light/0", Status = LightStatus.Red },
     };
 
     #region SINGLETON PATTERN

@@ -3,15 +3,11 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Predefined driveable path
+/// </summary>
 public class PathLayout : MonoBehaviour
 {
-    #region Enums
-    public enum PathTypes //Types of movement paths
-    {
-        linear,
-        loop
-    }
-    #endregion //Enums
 
     #region Public Variables
     public Transform[] PathSequence; //Array of all points in the path

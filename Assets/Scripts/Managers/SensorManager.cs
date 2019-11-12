@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// Used to update sensors
+/// </summary>
 public class SensorManager : MonoBehaviour
 {
     private MqttManager mqttManager;

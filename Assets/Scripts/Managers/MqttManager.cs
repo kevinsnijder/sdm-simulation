@@ -7,6 +7,9 @@ using UnityEngine;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
+/// <summary>
+/// Manages all connections with the MQTT server
+/// </summary>
 public class MqttManager : MonoBehaviour
 {
     public string brokerHostname = "arankieskamp.com";

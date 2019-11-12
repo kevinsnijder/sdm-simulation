@@ -41,7 +41,6 @@ public class Drive : MonoBehaviour
         Quaternion q = Quaternion.AngleAxis(angle - 90, Vector3.forward);
         transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * (Speed * RotationSpeedMultiplier));
 
-
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, transform.TransformDirection(Vector3.up), CollisionDistance);
         if (hits.Length > 1)
         {
@@ -71,31 +70,43 @@ public class Drive : MonoBehaviour
                 string currentSensorName = currentNode.name.ToLower();
                 if (currentSensorName == "sensor0" || currentSensorName == "sensor1")
                 {
-                    int sensor;
+                    Sensor sensor = Sensor.NotASensor;
                     if (currentSensorName == "sensor0") // TODO: Fix this garbage sensor detection system
                     {
-                        sensor = 0;
+                        sensor = Sensor.FirstSensorNode;
                     }
-                    else
+                    else if(currentSensorName == "sensor1")
                     {
-                        sensor = 1;
+                        sensor = Sensor.SecondSensorNode;
+                    }
+                    else if(currentSensorName == "warningsensor")
+                    {
+                        sensor = Sensor.BridgeWarningNode;
                     }
 
-                    string sensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
-
-                    sensorManager.UpdateSensor(sensorName, sensor, 1);
-
-                    if(sensor == 0 && trafficLightManager.CheckLightStatus(lightName) == LightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == LightStatus.Orange)
+                    if (sensor!=Sensor.NotASensor)
                     {
-                        string previoussensorname = currentNode.parent.parent.parent.parent.name + "/" + pathName;
-                        sensorManager.UpdateSensor(previoussensorname, 1, 0);
-                        PauseDriving = true;
-                        return;
-                    }
-                    else if(sensor==0) // If the light is green -> Drive past the light and update for the possible next light
-                    {
-                        sensorManager.UpdateSensor(sensorName, sensor, 0);
-                        CurrentTrafficLightId++;
+                        string sensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
+
+                        sensorManager.UpdateSensor(sensorName, (int)sensor, 1);
+
+                        if (sensor == Sensor.FirstSensorNode && trafficLightManager.CheckLightStatus(lightName) == LightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == LightStatus.Orange)
+                        {
+                            string previoussensorname = currentNode.parent.parent.parent.parent.name + "/" + pathName;
+                            sensorManager.UpdateSensor(previoussensorname, 1, 0);
+                            PauseDriving = true;
+                            return;
+                        }
+                        else if (sensor == Sensor.FirstSensorNode) // If the light is green -> Drive past the light and update for the possible next light
+                        {
+                            sensorManager.UpdateSensor(sensorName, (int)sensor, 0);
+                            CurrentTrafficLightId++;
+                        }
+                        else if (sensor == Sensor.BridgeWarningNode)
+                        {
+                            // Check if warning light is on
+
+                        }
                     }
                 }
                 CurrentNodeId++; // Get next point in MovementPath

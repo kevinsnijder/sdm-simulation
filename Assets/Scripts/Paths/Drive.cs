@@ -81,7 +81,7 @@ public class Drive : MonoBehaviour
                     }
                     else if(currentSensorName == "warningsensor")
                     {
-                        sensor = Sensor.BridgeWarningNode;
+                        sensor = Sensor.WarningNode;
                     }
 
                     if (sensor!=Sensor.NotASensor)
@@ -102,10 +102,9 @@ public class Drive : MonoBehaviour
                             sensorManager.UpdateSensor(sensorName, (int)sensor, 0);
                             CurrentTrafficLightId++;
                         }
-                        else if (sensor == Sensor.BridgeWarningNode)
+                        else if (sensor == Sensor.WarningNode)
                         {
                             // Check if warning light is on
-
                         }
                     }
                 }

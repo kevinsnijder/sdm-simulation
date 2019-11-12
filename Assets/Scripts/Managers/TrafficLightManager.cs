@@ -7,18 +7,18 @@ using UnityEngine.UI;
 
 public class TrafficLightManager : MonoBehaviour
 {
-    List<TrafficLight> lights = new List<TrafficLight>(){ 
-        new TrafficLight() { Name = "motorised/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/1/0/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/1/1/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/2/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/3/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/4/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/5/0/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/5/1/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/6/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/7/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/8/null/traffic_light/0", Status = TrafficLightStatus.Red }
+    List<TrafficLight> motorisedLights = new List<TrafficLight>(){ 
+        new TrafficLight() { Name = "motorised/0/null/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/1/0/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/1/1/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/2/null/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/3/null/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/4/null/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/5/0/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/5/1/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/6/null/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/7/null/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "motorised/8/null/traffic_light/0", Status = LightStatus.Red }
     };
 
     #region SINGLETON PATTERN
@@ -52,7 +52,7 @@ public class TrafficLightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (TrafficLight light in lights)
+        foreach (TrafficLight light in motorisedLights)
         {
             if (light.UpdateRequired)
             {
@@ -61,16 +61,16 @@ public class TrafficLightManager : MonoBehaviour
                 SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
                 switch (light.Status)
                 {
-                    case TrafficLightStatus.Green:
+                    case LightStatus.Green:
                         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedGreen");
                         break;
-                    case TrafficLightStatus.Red:
+                    case LightStatus.Red:
                         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedRed");
                         break;
-                    case TrafficLightStatus.Orange:
+                    case LightStatus.Orange:
                         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedOrange");
                         break;
-                    case TrafficLightStatus.Off:
+                    case LightStatus.Off:
                         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/MotorisedOff");
                         break;
                 }
@@ -83,10 +83,10 @@ public class TrafficLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateMotorisedLight(string lightName, TrafficLightStatus status)
+    internal void UpdateMotorisedLight(string lightName, LightStatus status)
     {
-        lights.Find(a => a.Name == lightName).Status = status;
-        lights.Find(a => a.Name == lightName).UpdateRequired = true;
+        motorisedLights.Find(a => a.Name == lightName).Status = status;
+        motorisedLights.Find(a => a.Name == lightName).UpdateRequired = true;
     }
 
     /// <summary>
@@ -94,13 +94,13 @@ public class TrafficLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <returns></returns>
-    internal TrafficLightStatus CheckLightStatus(string lightName)
+    internal LightStatus CheckLightStatus(string lightName)
     {
-        TrafficLight light = lights.Find(a => a.Name == lightName.ToLower());
+        TrafficLight light = motorisedLights.Find(a => a.Name == lightName.ToLower());
         if (light != null)
         {
             return light.Status;
         }
-        return TrafficLightStatus.Off;
+        return LightStatus.Off;
     }
 }

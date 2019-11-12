@@ -85,7 +85,7 @@ public class Drive : MonoBehaviour
 
                     sensorManager.UpdateSensor(sensorName, sensor, 1);
 
-                    if(sensor == 0 && trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange)
+                    if(sensor == 0 && trafficLightManager.CheckLightStatus(lightName) == LightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == LightStatus.Orange)
                     {
                         string previoussensorname = currentNode.parent.parent.parent.parent.name + "/" + pathName;
                         sensorManager.UpdateSensor(previoussensorname, 1, 0);
@@ -105,7 +105,7 @@ public class Drive : MonoBehaviour
         {
             string currentSensorName = currentNode.name.ToLower();
 
-            if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Green && currentSensorName == "sensor0")
+            if (trafficLightManager.CheckLightStatus(lightName) == LightStatus.Green && currentSensorName == "sensor0")
             {
                 PauseDriving = false;
                 CurrentTrafficLightId++;

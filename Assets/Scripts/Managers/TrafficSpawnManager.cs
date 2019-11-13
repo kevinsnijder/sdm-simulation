@@ -10,7 +10,9 @@ using UnityEngine;
 public class TrafficSpawnManager : MonoBehaviour
 {
     public GameObject CarPrefab;
+    public GameObject BoatPrefab;
     public List<GameObject> CarPaths;
+    public List<GameObject> BoatPaths;
     private System.Random rnd = new System.Random();
 
 
@@ -34,6 +36,7 @@ public class TrafficSpawnManager : MonoBehaviour
             return _instance;
         }
     }
+    #endregion
 
     public void SpawnRandomCar()
     {
@@ -45,12 +48,27 @@ public class TrafficSpawnManager : MonoBehaviour
 
         GameObject path = CarPaths[r];
         PathLayout movementPath = path.GetComponent<PathLayout>();
-        car.GetComponent<Drive>().Path = movementPath;
+        car.GetComponent<Move>().Path = movementPath;
         car.transform.position = movementPath.PathSequence[0].position;
 
         Debug.Log("Created car at (" + car.transform.position.x + ", " + car.transform.position.y + ", " + car.transform.position.z + ")");
     }
-    #endregion
+
+    public void SpawnRandomBoat() 
+    {
+        Debug.Log("Spawning boat");
+
+        var boat = Instantiate(BoatPrefab);
+
+        int r = rnd.Next(BoatPaths.Count);
+
+        GameObject path = BoatPaths[r];
+        PathLayout movementPath = path.GetComponent<PathLayout>();
+        boat.GetComponent<Move>().Path = movementPath;
+        boat.transform.position = movementPath.PathSequence[0].position;
+
+        Debug.Log("Created boat at (" + boat.transform.position.x + ", " + boat.transform.position.y + ", " + boat.transform.position.z + ")");
+    }
 
     // Start is called before the first frame update
     void Start()

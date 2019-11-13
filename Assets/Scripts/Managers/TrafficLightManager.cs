@@ -24,6 +24,11 @@ public class TrafficLightManager : MonoBehaviour
         new TrafficLight() { Name = "motorised/8/null/traffic_light/0", Status = LightStatus.Red },
     };
 
+    List<TrafficLight> vesselLights = new List<TrafficLight>{
+        new TrafficLight() { Name = "vessel/0/null/traffic_light/0", Status = LightStatus.Red },
+        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = LightStatus.Red }
+    };
+
     #region SINGLETON PATTERN
     public static TrafficLightManager _instance;
     public static TrafficLightManager Instance
@@ -79,10 +84,31 @@ public class TrafficLightManager : MonoBehaviour
                 }
             }
         }
+        foreach(TrafficLight light in vesselLights) 
+        {
+            if(light.UpdateRequired) 
+            {
+                light.UpdateRequired = false;
+                var gameObject = GameObject.Find(light.Name);
+                SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+                switch (light.Status)
+                {
+                    case LightStatus.Green:
+                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/OtherGreen");
+                        break;
+                    case LightStatus.Red:
+                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/OtherRed");
+                        break;
+                    case LightStatus.Off:
+                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/OtherOff");
+                        break;
+                }
+            }
+        }
     }
 
     /// <summary>
-    /// Updates a light to the preferred status
+    /// Updates a motorised light to the preferred status
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
@@ -93,13 +119,26 @@ public class TrafficLightManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Updates a vessel light to the preferred status
+    /// </summary>
+    /// <param name="lightName">Ex. vessel/0/traffic_light/0</param>
+    /// <param name="status">Status of the light</param>
+    internal void UpdateVesselLight(string lightName, LightStatus status)
+    {
+        vesselLights.Find(a => a.Name == lightName).Status = status;
+        vesselLights.Find(a => a.Name == lightName).UpdateRequired = true;
+    }
+
+    /// <summary>
     /// Gets the status of a light
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <returns></returns>
     internal LightStatus CheckLightStatus(string lightName)
     {
-        TrafficLight light = motorisedLights.Find(a => a.Name == lightName.ToLower());
+        var allLights = motorisedLights.Concat(vesselLights).ToList();
+        TrafficLight light = allLights.Find(a => a.Name == lightName.ToLower());
+
         if (light != null)
         {
             return light.Status;

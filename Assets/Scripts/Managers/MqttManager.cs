@@ -83,9 +83,16 @@ public class MqttManager : MonoBehaviour
         string topic = e.Topic.Substring(e.Topic.IndexOf('/')+1);
 
         // Check if its an update traffic statement
-        if (topic.IndexOf("traffic_light") != -1 && topic.IndexOf("motorised") != -1)
+        if (topic.IndexOf("traffic_light") != -1)
         {
-            trafficLightManager.UpdateMotorisedLight(topic, (LightStatus)int.Parse(msg));
+            if(topic.IndexOf("motorised") != -1) 
+            {
+                trafficLightManager.UpdateMotorisedLight(topic, (LightStatus)int.Parse(msg));
+            }
+            if(topic.IndexOf("vessel") != -1) 
+            {
+                trafficLightManager.UpdateVesselLight(topic, (LightStatus)int.Parse(msg));
+            }
         }
     }
 

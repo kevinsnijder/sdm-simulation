@@ -23,6 +23,10 @@ public class ButtonPressListener : MonoBehaviour
         {
             trafficSpawnManager.SpawnRandomCar();
         }
+        if(Input.GetKeyDown(KeyCode.Backspace)) 
+        {
+            trafficSpawnManager.SpawnRandomBoat();
+        }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             mqttManager.Publish("motorised/0/null/traffic_light/0", "2");
@@ -60,6 +64,14 @@ public class ButtonPressListener : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha8))
         {
             mqttManager.Publish("motorised/8/null/traffic_light/0", "2");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            mqttManager.Publish("vessel/0/null/traffic_light/0", "2");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            mqttManager.Publish("vessel/1/null/traffic_light/0", "2");
         }
     }
 }

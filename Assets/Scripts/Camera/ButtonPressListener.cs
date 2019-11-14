@@ -21,11 +21,7 @@ public class ButtonPressListener : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            trafficSpawnManager.SpawnRandomCar();
-        }
-        if(Input.GetKeyDown(KeyCode.Backspace)) 
-        {
-            trafficSpawnManager.SpawnRandomBoat();
+            trafficSpawnManager.SpawnRandom();
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {

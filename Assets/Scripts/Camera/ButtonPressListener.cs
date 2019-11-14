@@ -7,6 +7,7 @@ public class ButtonPressListener : MonoBehaviour
 {
     TrafficSpawnManager trafficSpawnManager;
     MqttManager mqttManager;
+    private bool backspacePressed = false;
 
 
     // Start is called before the first frame update
@@ -19,6 +20,18 @@ public class ButtonPressListener : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Backspace))
+        {
+            if(!backspacePressed)
+            {
+                mqttManager.Publish("vessel/warning_light", "1");
+            }
+            else
+            {
+                mqttManager.Publish("vessel/warning_light", "0");
+            }
+            backspacePressed = !backspacePressed;
+        }
         if (Input.GetKeyDown("space"))
         {
             trafficSpawnManager.SpawnRandom();

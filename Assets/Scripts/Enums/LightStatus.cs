@@ -1,5 +1,4 @@
-﻿
-public enum LightStatus
+﻿public enum LightStatus
 {
     Red = 0,
     Orange = 1,

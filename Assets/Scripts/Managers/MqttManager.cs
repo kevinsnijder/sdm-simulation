@@ -15,6 +15,7 @@ public class MqttManager : MonoBehaviour
     public string brokerHostname = "arankieskamp.com";
     public int teamId = 10;
     private TrafficLightManager trafficLightManager;
+    private WarningLightManager warningLightManager;
 
 
     private MqttClient client;
@@ -45,6 +46,7 @@ public class MqttManager : MonoBehaviour
     void Start()
     {
         trafficLightManager = TrafficLightManager.Instance;
+        warningLightManager = WarningLightManager.Instance;
         Debug.Log("Connecting to " + brokerHostname);
         Connect();
         client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
@@ -87,11 +89,24 @@ public class MqttManager : MonoBehaviour
         {
             if(topic.IndexOf(LaneType.Motorised) != -1) 
             {
-                trafficLightManager.UpdateMotorisedLight(topic, (LightStatus)int.Parse(msg));
+                trafficLightManager.UpdateMotorisedLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
             if(topic.IndexOf(LaneType.Vessel) != -1) 
             {
-                trafficLightManager.UpdateVesselLight(topic, (LightStatus)int.Parse(msg));
+                trafficLightManager.UpdateVesselLight(topic, (TrafficLightStatus)int.Parse(msg));
+            }
+        }
+
+        // Check if its an update warning light statement
+        if(topic.IndexOf(ComponentType.WarningLight) != -1)
+        {
+            if(topic.IndexOf(LaneType.Vessel) != -1)
+            {
+                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Vessel);
+            }
+            if (topic.IndexOf(LaneType.Track) != -1)
+            {
+                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Track);
             }
         }
     }

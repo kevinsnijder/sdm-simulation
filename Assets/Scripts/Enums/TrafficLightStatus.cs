@@ -1,4 +1,4 @@
-﻿public enum LightStatus
+﻿public enum TrafficLightStatus
 {
     Red = 0,
     Orange = 1,

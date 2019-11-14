@@ -10,9 +10,10 @@ using UnityEngine;
 public class TrafficSpawnManager : MonoBehaviour
 {
     public GameObject CarPrefab;
+    public GameObject BoatPrefab;
     public List<GameObject> CarPaths;
+    public List<GameObject> BoatPaths;
     private System.Random rnd = new System.Random();
-
 
     #region SINGLETON PATTERN
     public static TrafficSpawnManager _instance;
@@ -34,23 +35,70 @@ public class TrafficSpawnManager : MonoBehaviour
             return _instance;
         }
     }
+    #endregion
 
-    public void SpawnRandomCar()
+
+    public void SpawnRandom()
     {
-        Debug.Log("Spawning car");
+        int r = rnd.Next(21);
 
-        var car = Instantiate(CarPrefab);
+        switch(r)
+        {
+            // Motorised
+            //TODO: Dit vieze spul opruimen
+            case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9:case 10:
+            case 11:case 12:case 13:case 14:case 15:case 16:case 17:case 18:case 19:
+                SpawnRandomMotorised();
+                break;
+            // Vessel
+            case 20:
+                SpawnRandomVessel();
+                break;
+            //// Track
+            //case :
+            //    break;
+            //// Cycle
+            //case :
+            //    break;
+            //// Foot
+            //case : 
+            //    break;
+        }
+
+    }
+
+    private void SpawnRandomMotorised()
+    {
+        Debug.Log("Spawning motorised");
+
+        var motorised = Instantiate(CarPrefab);
 
         int r = rnd.Next(CarPaths.Count);
 
         GameObject path = CarPaths[r];
         PathLayout movementPath = path.GetComponent<PathLayout>();
-        car.GetComponent<Drive>().Path = movementPath;
-        car.transform.position = movementPath.PathSequence[0].position;
+        motorised.GetComponent<Move>().Path = movementPath;
+        motorised.transform.position = movementPath.PathSequence[0].position;
 
-        Debug.Log("Created car at (" + car.transform.position.x + ", " + car.transform.position.y + ", " + car.transform.position.z + ")");
+        Debug.Log("Created motorised at (" + motorised.transform.position.x + ", " + motorised.transform.position.y + ", " + motorised.transform.position.z + ")");
     }
-    #endregion
+
+    private void SpawnRandomVessel() 
+    {
+        Debug.Log("Spawning vessel");
+
+        var vessel = Instantiate(BoatPrefab);
+
+        int r = rnd.Next(BoatPaths.Count);
+
+        GameObject path = BoatPaths[r];
+        PathLayout movementPath = path.GetComponent<PathLayout>();
+        vessel.GetComponent<Move>().Path = movementPath;
+        vessel.transform.position = movementPath.PathSequence[0].position;
+
+        Debug.Log("Created boat at (" + vessel.transform.position.x + ", " + vessel.transform.position.y + ", " + vessel.transform.position.z + ")");
+    }
+
 
     // Start is called before the first frame update
     void Start()

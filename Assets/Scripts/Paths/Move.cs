@@ -4,18 +4,19 @@ using System.Threading;
 using UnityEngine;
 
 /// <summary>
-/// This class is the brain of a car driver
+/// This class is the brain of a path user
 /// </summary>
-public class Drive : MonoBehaviour
+public class Move : MonoBehaviour
 {
     public PathLayout Path; // Reference to Movement Path Used
     private SensorManager sensorManager;
     private TrafficLightManager trafficLightManager;
+    private WarningLightManager warningLightManager;
     private int CurrentNodeId = 0;
     public float MaxDistanceToGoal = .1f; // How close does it have to be to the point to be considered at point
-    public float Speed = 7;
+    public float Speed;
     public float RotationSpeedMultiplier = 7; // Easing rotations
-    private bool PauseDriving = false;
+    private bool PauseMoving = false;
     public float CollisionDistance;
 
     // Start is called before the first frame update
@@ -23,6 +24,7 @@ public class Drive : MonoBehaviour
     {
         sensorManager = SensorManager.Instance;
         trafficLightManager = TrafficLightManager.Instance;
+        warningLightManager = WarningLightManager.Instance;
 
         //Make sure there is a path assigned
         if (Path == null)
@@ -37,7 +39,7 @@ public class Drive : MonoBehaviour
     {
         Transform currentNode = Path.PathSequence[CurrentNodeId];
 
-        // --- Car rotation --- //
+        // --- Vehicle rotation --- //
         Vector3 vectorToTarget = currentNode.position - transform.position;
         float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
         Quaternion q = Quaternion.AngleAxis(angle - 90, Vector3.forward);
@@ -47,15 +49,16 @@ public class Drive : MonoBehaviour
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, transform.TransformDirection(Vector3.up), CollisionDistance);
         if (hits.Length > 1)
         {
-            PauseDriving = true;
+            PauseMoving = true;
         }
 
         // --- Path string builder --- //
         string pathName = currentNode.parent.parent.parent.name + "/" + currentNode.parent.parent.name;
         string lightName = currentNode.parent.parent.parent.parent.name + "/" + pathName + "/traffic_light/0";
+        string warningLightName = "vessel" + "/" + "warning_light";
 
-        // --- Driving brain --- //
-        if (!PauseDriving)
+        // --- Moving brain --- //
+        if (!PauseMoving)
         {
             // Move to the next point in path using MoveTowards
             transform.position =
@@ -74,19 +77,19 @@ public class Drive : MonoBehaviour
                 }
 
                 // --- Do stuff based on the node that was hit --- //
-                string currentSensorName = currentNode.name.ToLower();
-                if (currentSensorName == "sensor0" || currentSensorName == "sensor1" || currentSensorName == "warningsensor")
+                string currentNodeName = currentNode.name.ToLower();
+                if (currentNodeName == "sensor0" || currentNodeName == "sensor1" || currentNodeName == "nodewarning")
                 {
                     Sensor sensor = Sensor.NotASensor;
-                    if (currentSensorName == "sensor0") // TODO: Fix this garbage sensor detection system
+                    if (currentNodeName == "sensor0") // TODO: Fix this garbage sensor detection system
                     {
                         sensor = Sensor.FirstSensorNode;
                     }
-                    else if(currentSensorName == "sensor1")
+                    else if(currentNodeName == "sensor1")
                     {
                         sensor = Sensor.SecondSensorNode;
                     }
-                    else if(currentSensorName == "warningsensor")
+                    else if(currentNodeName == "nodewarning")
                     {
                         sensor = Sensor.WarningNode;
                     }
@@ -99,12 +102,12 @@ public class Drive : MonoBehaviour
 
                         sensorManager.UpdateSensor(sensorName, (int)sensor, 1);
 
-                        if (sensor == Sensor.FirstSensorNode && trafficLightManager.CheckLightStatus(lightName) == LightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == LightStatus.Orange)
+                        if (sensor == Sensor.FirstSensorNode && trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange)
                         {
                             // Light is red
                             string previoussensorname = currentNode.parent.parent.parent.parent.name + "/" + pathName;
                             sensorManager.UpdateSensor(previoussensorname, 1, 0);
-                            PauseDriving = true;
+                            PauseMoving = true;
                             return;
                         }
                         else if (sensor == Sensor.FirstSensorNode)
@@ -114,7 +117,12 @@ public class Drive : MonoBehaviour
                         }
                         else if (sensor == Sensor.WarningNode)
                         {
-                            // TODO: Check if warning light is on
+                            //Warning light is on
+                            if(warningLightManager.CheckLightStatus(warningLightName) == WarningLightStatus.Flashing)
+                            {
+                                PauseMoving = true;
+                                return;
+                            }
                         }
                     }
                 }
@@ -124,18 +132,23 @@ public class Drive : MonoBehaviour
         else
         {
             // Currently not driving
-            string currentSensorName = currentNode.name.ToLower();
+            string currentNodeName = currentNode.name.ToLower();
 
             // Check if the light in front of you is green
-            if (trafficLightManager.CheckLightStatus(lightName) == LightStatus.Green && currentSensorName == "sensor0")
+            if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Green && currentNodeName == "sensor0")
             {
-                PauseDriving = false;
+                PauseMoving = false;
+                CurrentNodeId++;
+            }
+            if(warningLightManager.CheckLightStatus(warningLightName) == WarningLightStatus.Off && currentNodeName == "nodewarning")
+            {
+                PauseMoving = false;
                 CurrentNodeId++;
             }
             // Check if you are not colliding with another car
-            if (currentSensorName != "sensor0" && hits.Length == 1)
+            if (currentNodeName != "sensor0" && hits.Length == 1)
             {
-                PauseDriving = false;
+                PauseMoving = false;
             }
         }
     }

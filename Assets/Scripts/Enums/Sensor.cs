@@ -2,6 +2,8 @@
 {
     FirstSensorNode = 0,
     SecondSensorNode = 1,
-    WarningNode = 2,
-    NotASensor = 999
+    ThirdSensorNode = 2,
+    FourthSensorNode = 3,
+    WarningNode = 4,
+    NotASensor = 999,
 }

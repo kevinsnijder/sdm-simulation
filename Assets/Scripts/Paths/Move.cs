@@ -53,7 +53,7 @@ public class Move : MonoBehaviour
         }
 
         // --- Path string builder --- //
-        string pathName = currentNode.parent.parent.parent.name + "/" + currentNode.parent.parent.name;
+        string pathName = currentNode.parent.parent.parent.name;
         string lightName = currentNode.parent.parent.parent.parent.name + "/" + pathName + "/traffic_light/0";
         string warningLightName = "vessel" + "/" + "warning_light";
 
@@ -78,16 +78,29 @@ public class Move : MonoBehaviour
 
                 // --- Do stuff based on the node that was hit --- //
                 string currentNodeName = currentNode.name.ToLower();
-                if (currentNodeName == "sensor0" || currentNodeName == "sensor1" || currentNodeName == "nodewarning")
+                if (currentNodeName == "sensor0" || 
+                    currentNodeName == "sensor1" || 
+                    currentNodeName == "sensor2" || 
+                    currentNodeName == "sensor3" || 
+                    currentNodeName == "nodewarning"
+                    )
                 {
                     Sensor sensor = Sensor.NotASensor;
                     if (currentNodeName == "sensor0") // TODO: Fix this garbage sensor detection system
                     {
                         sensor = Sensor.FirstSensorNode;
                     }
-                    else if(currentNodeName == "sensor1")
+                    else if (currentNodeName == "sensor1")
                     {
                         sensor = Sensor.SecondSensorNode;
+                    }
+                    else if (currentNodeName == "sensor2")
+                    {
+                        sensor = Sensor.ThirdSensorNode;
+                    }
+                    else if (currentNodeName == "sensor3")
+                    {
+                        sensor = Sensor.FourthSensorNode;
                     }
                     else if(currentNodeName == "nodewarning")
                     {
@@ -100,9 +113,12 @@ public class Move : MonoBehaviour
                         // --- Update sensors and stop driving if required --- //
                         string sensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
 
-                        sensorManager.UpdateSensor(sensorName, (int)sensor, 1);
+                        if(sensor!= Sensor.WarningNode)
+                        {
+                            sensorManager.UpdateSensor(sensorName, (int)sensor, 1);
+                        }
 
-                        if (sensor == Sensor.FirstSensorNode && trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange)
+                        if ((sensor == Sensor.FirstSensorNode || sensor == Sensor.ThirdSensorNode) && (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange))
                         {
                             // Light is red
                             string previoussensorname = currentNode.parent.parent.parent.parent.name + "/" + pathName;
@@ -110,7 +126,7 @@ public class Move : MonoBehaviour
                             PauseMoving = true;
                             return;
                         }
-                        else if (sensor == Sensor.FirstSensorNode)
+                        else if (sensor == Sensor.FirstSensorNode || sensor == Sensor.ThirdSensorNode)
                         {
                             // Light is green
                             sensorManager.UpdateSensor(sensorName, (int)sensor, 0);
@@ -135,18 +151,17 @@ public class Move : MonoBehaviour
             string currentNodeName = currentNode.name.ToLower();
 
             // Check if the light in front of you is green
-            if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Green && currentNodeName == "sensor0")
+            if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Green && (currentNodeName == "sensor0"|| currentNodeName == "sensor2"))
             {
                 PauseMoving = false;
-                CurrentNodeId++;
             }
-            if(warningLightManager.CheckLightStatus(warningLightName) == WarningLightStatus.Off && currentNodeName == "nodewarning")
-            {
-                PauseMoving = false;
-                CurrentNodeId++;
-            }
+            //if(warningLightManager.CheckLightStatus(warningLightName) == WarningLightStatus.Off && currentNodeName == "nodewarning")
+            //{
+            //    PauseMoving = false;
+            //    CurrentNodeId++;
+            //}
             // Check if you are not colliding with another car
-            if (currentNodeName != "sensor0" && hits.Length == 1)
+            if (currentNodeName != "sensor0" && currentNodeName != "sensor2" && hits.Length == 1)
             {
                 PauseMoving = false;
             }

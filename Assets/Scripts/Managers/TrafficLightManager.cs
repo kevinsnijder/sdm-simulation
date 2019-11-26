@@ -11,17 +11,15 @@ using UnityEngine.UI;
 public class TrafficLightManager : MonoBehaviour
 {
     List<TrafficLight> motorisedLights = new List<TrafficLight>(){ // Whoops hardcoded lights, gotta fix this some time
-        new TrafficLight() { Name = "motorised/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/1/0/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/1/1/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/2/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/3/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/4/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/5/0/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/5/1/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/6/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/7/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "motorised/8/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/0/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/1/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/2/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/3/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/4/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/5/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/6/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/7/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "motorised/8/traffic_light/0", Status = TrafficLightStatus.Red },
     };
 
     List<TrafficLight> vesselLights = new List<TrafficLight>{

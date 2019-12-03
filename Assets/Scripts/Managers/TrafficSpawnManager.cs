@@ -37,7 +37,6 @@ public class TrafficSpawnManager : MonoBehaviour
     }
     #endregion
 
-
     public void SpawnRandom()
     {
         int r = rnd.Next(21);
@@ -103,6 +102,8 @@ public class TrafficSpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+         // Spawn random
+         //InvokeRepeating("SpawnRandom", 0f, 3);
     }
 
     // Update is called once per frame

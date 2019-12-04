@@ -10,7 +10,7 @@ using UnityEngine.UI;
 /// </summary>
 public class TrafficLightManager : MonoBehaviour
 {
-    List<TrafficLight> motorisedLights = new List<TrafficLight>(){ // Whoops hardcoded lights, gotta fix this some time
+    List<TrafficLight> trafficLights = new List<TrafficLight>(){ // Whoops hardcoded lights, gotta fix this some time
         new TrafficLight() { Name = "motorised/0/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "motorised/1/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "motorised/2/traffic_light/0", Status = TrafficLightStatus.Red },
@@ -22,9 +22,17 @@ public class TrafficLightManager : MonoBehaviour
         new TrafficLight() { Name = "motorised/8/traffic_light/0", Status = TrafficLightStatus.Red },
     };
 
-    List<TrafficLight> vesselLights = new List<TrafficLight>{
+    List<TrafficLight> otherLights = new List<TrafficLight>{
         new TrafficLight() { Name = "vessel/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red }
+        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red },
+
+        new TrafficLight() { Name = "cycle/0/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/1/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/2/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/3/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/3/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/4/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/4/traffic_light/1", Status = TrafficLightStatus.Red }
     };
 
     #region SINGLETON PATTERN
@@ -58,7 +66,7 @@ public class TrafficLightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (TrafficLight light in motorisedLights)
+        foreach (TrafficLight light in trafficLights)
         {
             if (light.UpdateRequired)
             {
@@ -82,7 +90,7 @@ public class TrafficLightManager : MonoBehaviour
                 }
             }
         }
-        foreach(TrafficLight light in vesselLights) 
+        foreach(TrafficLight light in otherLights) 
         {
             if(light.UpdateRequired) 
             {
@@ -112,19 +120,19 @@ public class TrafficLightManager : MonoBehaviour
     /// <param name="status">Status of the light</param>
     internal void UpdateMotorisedLight(string lightName, TrafficLightStatus status)
     {
-        motorisedLights.Find(a => a.Name == lightName).Status = status;
-        motorisedLights.Find(a => a.Name == lightName).UpdateRequired = true;
+        trafficLights.Find(a => a.Name == lightName).Status = status;
+        trafficLights.Find(a => a.Name == lightName).UpdateRequired = true;
     }
 
     /// <summary>
-    /// Updates a vessel light to the preferred status
+    /// Updates a light with 2 statuses to the preferred status
     /// </summary>
     /// <param name="lightName">Ex. vessel/0/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateVesselLight(string lightName, TrafficLightStatus status)
+    internal void UpdateOtherLight(string lightName, TrafficLightStatus status)
     {
-        vesselLights.Find(a => a.Name == lightName).Status = status;
-        vesselLights.Find(a => a.Name == lightName).UpdateRequired = true;
+        otherLights.Find(a => a.Name == lightName).Status = status;
+        otherLights.Find(a => a.Name == lightName).UpdateRequired = true;
     }
 
     /// <summary>
@@ -134,7 +142,7 @@ public class TrafficLightManager : MonoBehaviour
     /// <returns></returns>
     internal TrafficLightStatus CheckLightStatus(string lightName)
     {
-        var allLights = motorisedLights.Concat(vesselLights).ToList();
+        var allLights = trafficLights.Concat(otherLights).ToList();
         TrafficLight light = allLights.Find(a => a.Name == lightName.ToLower());
 
         if (light != null)

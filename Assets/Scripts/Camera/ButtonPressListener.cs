@@ -80,5 +80,15 @@ public class ButtonPressListener : MonoBehaviour
         {
             mqttManager.Publish("vessel/1/null/traffic_light/0", "2");
         }
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            mqttManager.Publish("cycle/0/traffic_light/0", "2");
+            mqttManager.Publish("cycle/1/traffic_light/0", "2");
+            mqttManager.Publish("cycle/2/traffic_light/0", "2");
+            mqttManager.Publish("cycle/3/traffic_light/0", "2");
+            mqttManager.Publish("cycle/3/traffic_light/1", "2");
+            mqttManager.Publish("cycle/4/traffic_light/0", "2");
+            mqttManager.Publish("cycle/4/traffic_light/1", "2");
+        }
     }
 }

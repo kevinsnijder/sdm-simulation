@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 /// <summary>
 /// This class is the brain of a path user
@@ -137,8 +139,15 @@ public class Move : MonoBehaviour
     /// <returns></returns>
     private bool IsColliding()
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, transform.TransformDirection(Vector3.up), CollisionDistance);
-        if (hits.Length > 1)
+        List<RaycastHit2D> hits = Physics2D.RaycastAll(transform.position, transform.TransformDirection(Vector3.up), CollisionDistance).ToList();
+
+        string objectName = gameObject.name.ToLower();
+        if (objectName.Contains("bike") || objectName.Contains("foot"))
+        {
+            hits.RemoveAll(x => x.collider.gameObject.GetComponent<Move>().Path != Path);
+        }
+
+        if (hits.Count > 1)
         {
             return true;
         }

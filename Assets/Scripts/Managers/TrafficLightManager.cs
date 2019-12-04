@@ -7,17 +7,9 @@ using UnityEngine;
 /// </summary>
 public class TrafficLightManager : MonoBehaviour
 {
-    private List<TrafficLight> otherLights = new List<TrafficLight>{
+    private List<TrafficLight> alternativeLights = new List<TrafficLight>{
         new TrafficLight() { Name = "vessel/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red },
-
-        new TrafficLight() { Name = "cycle/0/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "cycle/1/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "cycle/2/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "cycle/3/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "cycle/3/traffic_light/1", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "cycle/4/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "cycle/4/traffic_light/1", Status = TrafficLightStatus.Red }
+        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red }
     };
 
     private List<TrafficLight> trafficLights = new List<TrafficLight>(){ // Whoops hardcoded lights, gotta fix this some time
@@ -30,6 +22,14 @@ public class TrafficLightManager : MonoBehaviour
         new TrafficLight() { Name = "motorised/6/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "motorised/7/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "motorised/8/traffic_light/0", Status = TrafficLightStatus.Red },
+
+        new TrafficLight() { Name = "cycle/0/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/1/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/2/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/3/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/3/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/4/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "cycle/4/traffic_light/1", Status = TrafficLightStatus.Red }
     };
 
     #region SINGLETON PATTERN
@@ -64,7 +64,7 @@ public class TrafficLightManager : MonoBehaviour
     /// <returns></returns>
     internal TrafficLightStatus CheckLightStatus(string lightName)
     {
-        var allLights = trafficLights.Concat(otherLights).ToList();
+        var allLights = trafficLights.Concat(alternativeLights).ToList();
         TrafficLight light = allLights.Find(a => a.Name == lightName.ToLower());
 
         if (light != null)
@@ -79,10 +79,16 @@ public class TrafficLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateMotorisedLight(string lightName, TrafficLightStatus status)
+    internal void UpdateLight(string lightName, TrafficLightStatus status)
     {
         trafficLights.Find(a => a.Name == lightName).Status = status;
         trafficLights.Find(a => a.Name == lightName).UpdateRequired = true;
+
+        if (lightName.Contains("cycle/3") || lightName.Contains("cycle/4"))
+        {
+            trafficLights.Find(a => a.Name == lightName.Replace('0', '1')).Status = status;
+            trafficLights.Find(a => a.Name == lightName.Replace('0', '1')).UpdateRequired = true;
+        }
     }
 
     /// <summary>
@@ -90,15 +96,10 @@ public class TrafficLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. cycle/0/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateOtherLight(string lightName, TrafficLightStatus status)
+    internal void UpdateAlternativeLight(string lightName, TrafficLightStatus status)
     {
-        otherLights.Find(a => a.Name == lightName).Status = status;
-        otherLights.Find(a => a.Name == lightName).UpdateRequired = true;
-        if (lightName.Contains("cycle/3") || lightName.Contains("cycle/4"))
-        {
-            otherLights.Find(a => a.Name == lightName.Replace('0', '1')).Status = status;
-            otherLights.Find(a => a.Name == lightName.Replace('0', '1')).UpdateRequired = true;
-        }
+        alternativeLights.Find(a => a.Name == lightName).Status = status;
+        alternativeLights.Find(a => a.Name == lightName).UpdateRequired = true;
     }
 
     // Start is called before the first frame update
@@ -136,7 +137,7 @@ public class TrafficLightManager : MonoBehaviour
                 }
             }
         }
-        foreach (TrafficLight light in otherLights)
+        foreach (TrafficLight light in alternativeLights)
         {
             if (light.UpdateRequired)
             {

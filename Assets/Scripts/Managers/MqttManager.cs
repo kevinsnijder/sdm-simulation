@@ -59,13 +59,13 @@ public class MqttManager : MonoBehaviour
         // Check if its an update traffic statement
         if (topic.IndexOf(ComponentType.TrafficLight) != -1)
         {
-            if (topic.IndexOf(LaneType.Motorised) != -1)
+            if (topic.IndexOf(LaneType.Motorised) != -1 || topic.IndexOf(LaneType.Cycle) != -1)
             {
-                trafficLightManager.UpdateMotorisedLight(topic, (TrafficLightStatus)int.Parse(msg));
+                trafficLightManager.UpdateLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
-            if (topic.IndexOf(LaneType.Vessel) != -1 || topic.IndexOf(LaneType.Cycle) != -1)
+            if (topic.IndexOf(LaneType.Vessel) != -1)
             {
-                trafficLightManager.UpdateOtherLight(topic, (TrafficLightStatus)int.Parse(msg));
+                trafficLightManager.UpdateAlternativeLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
         }
 

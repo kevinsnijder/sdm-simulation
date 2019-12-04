@@ -5,19 +5,17 @@
 /// </summary>
 public class PathLayout : MonoBehaviour
 {
-    #region Public Variables
-
+    #region Public variables
     public Transform[] PathSequence; //Array of all points in the path
-
     #endregion Public Variables
 
-    // (Unity Named Methods)
+    #region Private variables
+    #endregion
 
-    #region Main Methods
-
-    //OnDrawGizmos will draw lines between our points in the Unity Editor
-    //These lines will allow us to easily see the path that
-    //our moving object will follow in the game
+    #region Public methods
+    /// <summary>
+    /// Draws lines between nodes
+    /// </summary>
     public void OnDrawGizmos()
     {
         //Make sure that your sequence has points in it
@@ -34,11 +32,12 @@ public class PathLayout : MonoBehaviour
             Gizmos.DrawLine(PathSequence[i - 1].position, PathSequence[i].position);
         }
     }
+    #endregion
 
+    #region Private methods
     //Update is called by Unity every frame
     private void Update()
     {
     }
-
-    #endregion Main Methods
+    #endregion
 }

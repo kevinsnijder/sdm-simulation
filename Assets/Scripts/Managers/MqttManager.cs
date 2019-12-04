@@ -9,13 +9,18 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 /// </summary>
 public class MqttManager : MonoBehaviour
 {
+    #region Public variables
     public string brokerHostname = "arankieskamp.com";
     public int teamId = 10;
+    #endregion
+
+    #region Private variables
     private MqttClient client;
     private TrafficLightManager trafficLightManager;
     private WarningLightManager warningLightManager;
+    #endregion
 
-    #region SINGLETON PATTERN
+    #region Singleton pattern
 
     public static MqttManager _instance;
 
@@ -40,6 +45,7 @@ public class MqttManager : MonoBehaviour
 
     #endregion SINGLETON PATTERN
 
+    #region Public methods
     public void Publish(string _topic, string msg)
     {
         string topic = teamId + "/" + _topic;
@@ -48,7 +54,9 @@ public class MqttManager : MonoBehaviour
             topic, Encoding.UTF8.GetBytes(msg),
             MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
     }
+    #endregion
 
+    #region Private methods
     private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
         string msg = Encoding.UTF8.GetString(e.Message);
@@ -116,4 +124,5 @@ public class MqttManager : MonoBehaviour
     private void Update()
     {
     }
+    #endregion
 }

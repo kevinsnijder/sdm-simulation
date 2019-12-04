@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class TrafficLightManager : MonoBehaviour
 {
+    #region Private variables
     private List<TrafficLight> alternativeLights = new List<TrafficLight>{
         new TrafficLight() { Name = "vessel/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red }
@@ -31,8 +32,12 @@ public class TrafficLightManager : MonoBehaviour
         new TrafficLight() { Name = "cycle/4/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "cycle/4/traffic_light/1", Status = TrafficLightStatus.Red }
     };
+    #endregion
 
-    #region SINGLETON PATTERN
+    #region Public variables
+    #endregion
+
+    #region Singleton pattern
 
     public static TrafficLightManager _instance;
 
@@ -57,12 +62,13 @@ public class TrafficLightManager : MonoBehaviour
 
     #endregion SINGLETON PATTERN
 
+    #region Public methods
     /// <summary>
     /// Gets the status of a light
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <returns></returns>
-    internal TrafficLightStatus CheckLightStatus(string lightName)
+    public TrafficLightStatus CheckLightStatus(string lightName)
     {
         var allLights = trafficLights.Concat(alternativeLights).ToList();
         TrafficLight light = allLights.Find(a => a.Name == lightName.ToLower());
@@ -79,7 +85,7 @@ public class TrafficLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateLight(string lightName, TrafficLightStatus status)
+    public void UpdateLight(string lightName, TrafficLightStatus status)
     {
         trafficLights.Find(a => a.Name == lightName).Status = status;
         trafficLights.Find(a => a.Name == lightName).UpdateRequired = true;
@@ -90,13 +96,15 @@ public class TrafficLightManager : MonoBehaviour
             trafficLights.Find(a => a.Name == lightName.Replace('0', '1')).UpdateRequired = true;
         }
     }
+    #endregion
 
+    #region Private methods
     /// <summary>
     /// Updates a light with 2 statuses to the preferred status
     /// </summary>
     /// <param name="lightName">Ex. cycle/0/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateAlternativeLight(string lightName, TrafficLightStatus status)
+    public void UpdateAlternativeLight(string lightName, TrafficLightStatus status)
     {
         alternativeLights.Find(a => a.Name == lightName).Status = status;
         alternativeLights.Find(a => a.Name == lightName).UpdateRequired = true;
@@ -161,4 +169,5 @@ public class TrafficLightManager : MonoBehaviour
             }
         }
     }
+    #endregion
 }

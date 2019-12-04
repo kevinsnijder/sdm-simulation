@@ -6,15 +6,20 @@ using UnityEngine;
 /// </summary>
 public class TrafficSpawnManager : MonoBehaviour
 {
+    #region Public variables
     public List<GameObject> BikePaths;
     public GameObject BikePrefab;
     public List<GameObject> BoatPaths;
     public GameObject BoatPrefab;
     public List<GameObject> CarPaths;
     public GameObject CarPrefab;
-    private System.Random rnd = new System.Random();
+    #endregion
 
-    #region SINGLETON PATTERN
+    #region Private variables
+    private System.Random rnd = new System.Random();
+    #endregion
+
+    #region Singleton pattern
 
     public static TrafficSpawnManager _instance;
 
@@ -39,6 +44,7 @@ public class TrafficSpawnManager : MonoBehaviour
 
     #endregion SINGLETON PATTERN
 
+    #region Public methods
     public void SpawnRandom()
     {
         //SpawnRandomCycle();
@@ -85,7 +91,9 @@ public class TrafficSpawnManager : MonoBehaviour
                 //    break;
         }
     }
+    #endregion
 
+    #region Private methods
     private void SpawnRandomCycle()
     {
         Debug.Log("Spawning bike");
@@ -143,4 +151,5 @@ public class TrafficSpawnManager : MonoBehaviour
     private void Update()
     {
     }
+    #endregion
 }

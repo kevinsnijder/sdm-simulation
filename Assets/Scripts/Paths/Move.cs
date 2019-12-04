@@ -7,27 +7,27 @@ using UnityEngine;
 /// </summary>
 public class Move : MonoBehaviour
 {
+    #region Public variables
     public float CollisionDistance;
     public float MaxDistanceToGoal = .1f;
-    public PathLayout Path; // Reference to Movement Path Used
+    public PathLayout Path;
     public float RotationSpeedMultiplier = 7;
-
-    // How close does it have to be to the point to be considered at point
     public float Speed;
+    #endregion
 
+    #region Private variables
     private Transform currentNode;
     private int CurrentNodeId = 0;
     private string lightName;
     private string pathName;
-
-    // Easing rotations
     private bool PauseMoving = false;
-
     private bool previousNodeUnpressed = true;
     private SensorManager sensorManager;
     private TrafficLightManager trafficLightManager;
     private WarningLightManager warningLightManager;
+    #endregion
 
+    #region Properties
     /// <summary>
     /// Checks if the current object is touching the node
     /// </summary>
@@ -107,7 +107,12 @@ public class Move : MonoBehaviour
             return true;
         }
     }
+    #endregion
 
+    #region Public methods
+    #endregion
+
+    #region Private methods
     /// <summary>
     /// Gets the name of the trafficlight this object has to check
     /// </summary>
@@ -274,4 +279,5 @@ public class Move : MonoBehaviour
             }
         }
     }
+    #endregion
 }

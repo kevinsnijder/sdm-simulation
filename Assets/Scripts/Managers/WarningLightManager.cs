@@ -2,10 +2,15 @@
 
 public class WarningLightManager : MonoBehaviour
 {
+    #region Public variables
+    #endregion
+
+    #region Private variables
     private WarningLight trackWarningLight = new WarningLight() { Name = "track/warning_light", Status = WarningLightStatus.Off };
     private WarningLight vesselWarningLight = new WarningLight() { Name = "vessel/warning_light", Status = WarningLightStatus.Off };
+    #endregion
 
-    #region SINGLETON PATTERN
+    #region Singleton pattern
 
     public static WarningLightManager _instance;
 
@@ -30,12 +35,13 @@ public class WarningLightManager : MonoBehaviour
 
     #endregion SINGLETON PATTERN
 
+    #region Public methods
     /// <summary>
     /// Gets the status of a light
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <returns></returns>
-    internal WarningLightStatus CheckLightStatus(string lightName)
+    public WarningLightStatus CheckLightStatus(string lightName)
     {
         if (lightName == vesselWarningLight.Name)
         {
@@ -56,7 +62,7 @@ public class WarningLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. vessel/warning_light</param>
     /// <param name="status">Status of the light</param>
-    internal void UpdateWarningLight(string lightName, WarningLightStatus status, string laneType)
+    public void UpdateWarningLight(string lightName, WarningLightStatus status, string laneType)
     {
         if (laneType == LaneType.Vessel)
         {
@@ -69,7 +75,9 @@ public class WarningLightManager : MonoBehaviour
             trackWarningLight.UpdateRequired = true;
         }
     }
+    #endregion
 
+    #region Private methods
     // Start is called before the first frame update
     private void Start()
     {
@@ -108,4 +116,5 @@ public class WarningLightManager : MonoBehaviour
             }
         }
     }
+    #endregion
 }

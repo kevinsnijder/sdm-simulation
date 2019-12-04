@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -9,18 +6,18 @@ using UnityEngine;
 /// </summary>
 public class TrafficSpawnManager : MonoBehaviour
 {
-    public GameObject CarPrefab;
-    public GameObject BoatPrefab;
-    public GameObject BikePrefab;
-
-    public List<GameObject> CarPaths;
-    public List<GameObject> BoatPaths;
     public List<GameObject> BikePaths;
-
+    public GameObject BikePrefab;
+    public List<GameObject> BoatPaths;
+    public GameObject BoatPrefab;
+    public List<GameObject> CarPaths;
+    public GameObject CarPrefab;
     private System.Random rnd = new System.Random();
 
     #region SINGLETON PATTERN
+
     public static TrafficSpawnManager _instance;
+
     public static TrafficSpawnManager Instance
     {
         get
@@ -39,20 +36,29 @@ public class TrafficSpawnManager : MonoBehaviour
             return _instance;
         }
     }
-    #endregion
 
+    #endregion SINGLETON PATTERN
 
     public void SpawnRandom()
     {
         //SpawnRandomCycle();
         int r = rnd.Next(21);
 
-        switch(r)
+        switch (r)
         {
             // Motorised
             //TODO: Dit vieze spul opruimen
-            case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9:case 10:
-            case 11:case 12:case 13:case 14:case 15:case 16:case 17:case 18:case 19:
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
                 SpawnRandomMotorised();
                 break;
             // Vessel
@@ -63,13 +69,21 @@ public class TrafficSpawnManager : MonoBehaviour
             //case :
             //    break;
             //// Cycle
-            //case :
-            //    break;
-            //// Foot
-            //case : 
-            //    break;
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+                SpawnRandomCycle();
+                break;
+                //// Foot
+                //case :
+                //    break;
         }
-
     }
 
     private void SpawnRandomCycle()
@@ -104,7 +118,7 @@ public class TrafficSpawnManager : MonoBehaviour
         Debug.Log("Created motorised at (" + motorised.transform.position.x + ", " + motorised.transform.position.y + ", " + motorised.transform.position.z + ")");
     }
 
-    private void SpawnRandomVessel() 
+    private void SpawnRandomVessel()
     {
         Debug.Log("Spawning vessel");
 
@@ -120,15 +134,13 @@ public class TrafficSpawnManager : MonoBehaviour
         Debug.Log("Created boat at (" + vessel.transform.position.x + ", " + vessel.transform.position.y + ", " + vessel.transform.position.z + ")");
     }
 
-
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
     }
 }

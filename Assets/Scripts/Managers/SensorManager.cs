@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Used to update sensors
@@ -11,9 +7,10 @@ public class SensorManager : MonoBehaviour
 {
     private MqttManager mqttManager;
 
-
     #region SINGLETON PATTERN
+
     public static SensorManager _instance;
+
     public static SensorManager Instance
     {
         get
@@ -32,30 +29,8 @@ public class SensorManager : MonoBehaviour
             return _instance;
         }
     }
-    #endregion
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        this.mqttManager = MqttManager.Instance;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    /// <summary>
-    /// Broadcasts that a sensor is pressed or unpressed
-    /// </summary>
-    /// <param name="pathName"></param>
-    /// <param name="sensor"></param>
-    /// <param name="sensorstatus"></param>
-    internal void UpdateSensor(string pathName, int sensor, int sensorstatus)
-    {
-        mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor, sensorstatus.ToString());
-    }
+    #endregion SINGLETON PATTERN
 
     /// <summary>
     /// Converts the sensor name to a sensor type
@@ -70,17 +45,43 @@ public class SensorManager : MonoBehaviour
         {
             case "sensor0":
                 return SensorType.FirstSensorNode;
+
             case "sensor1":
                 return SensorType.SecondSensorNode;
+
             case "sensor2":
                 return SensorType.ThirdSensorNode;
+
             case "sensor3":
                 return SensorType.FourthSensorNode;
+
             case "nodewarning":
                 return SensorType.WarningNode;
+
             default:
                 return SensorType.NotASensor;
-            
         }
+    }
+
+    /// <summary>
+    /// Broadcasts that a sensor is pressed or unpressed
+    /// </summary>
+    /// <param name="pathName"></param>
+    /// <param name="sensor"></param>
+    /// <param name="sensorstatus"></param>
+    internal void UpdateSensor(string pathName, int sensor, int sensorstatus)
+    {
+        mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor, sensorstatus.ToString());
+    }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        this.mqttManager = MqttManager.Instance;
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
     }
 }

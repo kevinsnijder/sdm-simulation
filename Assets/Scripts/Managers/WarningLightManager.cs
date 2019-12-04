@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class WarningLightManager : MonoBehaviour
 {
-
-    WarningLight vesselWarningLight = new WarningLight() { Name = "vessel/warning_light", Status = WarningLightStatus.Off };
-    WarningLight trackWarningLight = new WarningLight() { Name = "track/warning_light", Status = WarningLightStatus.Off };
+    private WarningLight trackWarningLight = new WarningLight() { Name = "track/warning_light", Status = WarningLightStatus.Off };
+    private WarningLight vesselWarningLight = new WarningLight() { Name = "vessel/warning_light", Status = WarningLightStatus.Off };
 
     #region SINGLETON PATTERN
+
     public static WarningLightManager _instance;
+
     public static WarningLightManager Instance
     {
         get
@@ -28,45 +27,27 @@ public class WarningLightManager : MonoBehaviour
             return _instance;
         }
     }
-    #endregion
 
-    // Start is called before the first frame update
-    void Start()
+    #endregion SINGLETON PATTERN
+
+    /// <summary>
+    /// Gets the status of a light
+    /// </summary>
+    /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
+    /// <returns></returns>
+    internal WarningLightStatus CheckLightStatus(string lightName)
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(vesselWarningLight.UpdateRequired)
+        if (lightName == vesselWarningLight.Name)
         {
-            UpdateSprite(vesselWarningLight);
+            return vesselWarningLight.Status;
         }
-        if (trackWarningLight.UpdateRequired)
+        else if (lightName == trackWarningLight.Name)
         {
-            UpdateSprite(trackWarningLight);
+            return trackWarningLight.Status;
         }
-    }
-
-    private void UpdateSprite(WarningLight warningLight)
-    {
-        warningLight.UpdateRequired = false;
-        var gameObject = GameObject.Find(warningLight.Name);
-        for(int i = 0; i < gameObject.transform.childCount; i++)
+        else
         {
-            var child = gameObject.transform.GetChild(i).gameObject;
-            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
-            switch (warningLight.Status)
-            {
-                case WarningLightStatus.Off:
-                    spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/warningOff");
-                    break;
-                case WarningLightStatus.Flashing:
-                    spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/WarningOn");
-                    break;
-
-            }
+            return WarningLightStatus.Off;
         }
     }
 
@@ -89,24 +70,42 @@ public class WarningLightManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Gets the status of a light
-    /// </summary>
-    /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
-    /// <returns></returns>
-    internal WarningLightStatus CheckLightStatus(string lightName)
+    // Start is called before the first frame update
+    private void Start()
     {
-        if(lightName == vesselWarningLight.Name)
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        if (vesselWarningLight.UpdateRequired)
         {
-            return vesselWarningLight.Status;
+            UpdateSprite(vesselWarningLight);
         }
-        else if(lightName == trackWarningLight.Name)
+        if (trackWarningLight.UpdateRequired)
         {
-            return trackWarningLight.Status;
+            UpdateSprite(trackWarningLight);
         }
-        else
+    }
+
+    private void UpdateSprite(WarningLight warningLight)
+    {
+        warningLight.UpdateRequired = false;
+        var gameObject = GameObject.Find(warningLight.Name);
+        for (int i = 0; i < gameObject.transform.childCount; i++)
         {
-            return WarningLightStatus.Off;
+            var child = gameObject.transform.GetChild(i).gameObject;
+            SpriteRenderer spriteRenderer = child.GetComponent<SpriteRenderer>();
+            switch (warningLight.Status)
+            {
+                case WarningLightStatus.Off:
+                    spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/warningOff");
+                    break;
+
+                case WarningLightStatus.Flashing:
+                    spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/WarningOn");
+                    break;
+            }
         }
     }
 }

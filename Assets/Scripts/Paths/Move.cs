@@ -1,87 +1,35 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// This class is the brain of a path user
 /// </summary>
 public class Move : MonoBehaviour
 {
+    public float CollisionDistance;
+    public float MaxDistanceToGoal = .1f;
     public PathLayout Path; // Reference to Movement Path Used
+    public float RotationSpeedMultiplier = 7;
+
+    // How close does it have to be to the point to be considered at point
+    public float Speed;
+
+    private Transform currentNode;
+    private int CurrentNodeId = 0;
+    private string lightName;
+    private string pathName;
+
+    // Easing rotations
+    private bool PauseMoving = false;
+
+    private bool previousNodeUnpressed = true;
     private SensorManager sensorManager;
     private TrafficLightManager trafficLightManager;
     private WarningLightManager warningLightManager;
-    private int CurrentNodeId = 0;
-    public float MaxDistanceToGoal = .1f; // How close does it have to be to the point to be considered at point
-    public float Speed;
-    public float RotationSpeedMultiplier = 7; // Easing rotations
-    private bool PauseMoving = false;
-    public float CollisionDistance;
-    private string pathName;
-    private string lightName;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        sensorManager = SensorManager.Instance;
-        trafficLightManager = TrafficLightManager.Instance;
-        warningLightManager = WarningLightManager.Instance;
-        pathName = Path.PathSequence[0].parent.parent.parent.name;
-        lightName = GetCurrentTrafficlight();
-
-        //Make sure there is a path assigned
-        if (Path == null)
-        {
-            Debug.LogError("Movement Path cannot be null, I must have a path to follow.", gameObject);
-            return;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Transform currentNode = Path.PathSequence[CurrentNodeId];
-
-        RotateTowardsNode(currentNode);
-        if (IsColliding())
-        {
-            PauseMoving = true;
-        }
-
-        // --- Moving brain --- //
-        if (!PauseMoving)
-        {
-            MoveTowardsNode(currentNode);
-        }
-        else
-        {
-            // Currently not driving
-            string currentNodeName = currentNode.name.ToLower();
-            // Check if the light in front of you is green
-            if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Green && (currentNodeName == "sensor0" || currentNodeName == "sensor2"))
-            {
-                PauseMoving = false;
-            }
-            //if(warningLightManager.CheckLightStatus(warningLightName) == WarningLightStatus.Off && currentNodeName == "nodewarning")
-            //{
-            //    PauseMoving = false;
-            //    CurrentNodeId++;
-            //}
-            // Check if you are not colliding with another car
-            if (currentNodeName != "sensor0" && currentNodeName != "sensor2" && !IsColliding())
-            {
-                PauseMoving = false;
-            }
-        }
-    }
 
     /// <summary>
     /// Checks if the current object is touching the node
     /// </summary>
-    public bool CloseEnoughToNode
+    private bool CloseEnoughToCurrentNode
     {
         get
         {
@@ -96,62 +44,65 @@ public class Move : MonoBehaviour
     }
 
     /// <summary>
-    /// Gradually moves towards the next node in the path
+    /// Checks if the current object is touching the previous node
     /// </summary>
-    /// <param name="node"></param>
-    private void MoveTowardsNode(Transform node)
+    private bool CloseEnoughToPreviousNode
     {
-        // Move to the next point in path using MoveTowards
-        transform.position =
-            Vector3.MoveTowards(transform.position,
-                                node.position,
-                                Time.deltaTime * Speed);
-
-        if (CloseEnoughToNode)
+        get
         {
-            // Selfdestruct if last node was hit
-            if (Path.PathSequence.Length - 1 == CurrentNodeId)
+            var distanceSquared = (transform.position - Path.PathSequence[CurrentNodeId - 1].position).sqrMagnitude;
+
+            if (distanceSquared < MaxDistanceToGoal * MaxDistanceToGoal)
             {
-                Destroy(gameObject);
+                return true;
             }
+            return false;
+        }
+    }
 
-            string currentNodeName = node.name.ToLower();
-            SensorType currentSensorType = sensorManager.GetSensorType(currentNodeName);
+    /// <summary>
+    /// The type of the sensor the object is currently moving towards
+    /// </summary>
+    private SensorType CurrentSensorType
+    {
+        get
+        {
+            return sensorManager.GetSensorType(currentNode.name);
+        }
+    }
 
-            if (currentSensorType != SensorType.NotASensor)
+    /// <summary>
+    /// The type of the sensor the object was previously moving towards
+    /// </summary>
+    private SensorType PreviousSensorType
+    {
+        get
+        {
+            return sensorManager.GetSensorType(Path.PathSequence[CurrentNodeId - 1].name);
+        }
+    }
+
+    /// <summary>
+    /// Checks if its safe to continue driving forwards
+    /// </summary>
+    private bool SafeToContinue
+    {
+        get
+        {
+            if (PauseMoving)
             {
-                // --- Update sensors and stop driving if required --- //
-                string fullSensorName = node.parent.parent.parent.parent.name + "/" + pathName;
-
-                if (currentSensorType != SensorType.WarningNode)
+                SensorType sensorType = sensorManager.GetSensorType(currentNode.name);
+                if (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Green && (sensorType == SensorType.FirstSensorNode || sensorType == SensorType.ThirdSensorNode))
                 {
-                    sensorManager.UpdateSensor(fullSensorName, (int)currentSensorType, 1);
+                    return true;
                 }
-
-                if ((currentSensorType == SensorType.FirstSensorNode || currentSensorType == SensorType.ThirdSensorNode) && (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange))
+                if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode && !IsColliding())
                 {
-                    // Light is red
-                    string previoussensorname = node.parent.parent.parent.parent.name + "/" + pathName;
-                    sensorManager.UpdateSensor(previoussensorname, 1, 0);
-                    PauseMoving = true;
-                    return;
+                    return true;
                 }
-                else if (currentSensorType == SensorType.FirstSensorNode || currentSensorType == SensorType.ThirdSensorNode)
-                {
-                    // Light is green
-                    sensorManager.UpdateSensor(fullSensorName, (int)currentSensorType, 0);
-                }
-                else if (currentSensorType == SensorType.WarningNode)
-                {
-                    // Warning light is on
-                    if (warningLightManager.CheckLightStatus("vessel/warning_light") == WarningLightStatus.Flashing)
-                    {
-                        PauseMoving = true;
-                        return;
-                    }
-                }
+                return false;
             }
-            CurrentNodeId++; // Get next point in MovementPath
+            return true;
         }
     }
 
@@ -195,6 +146,59 @@ public class Move : MonoBehaviour
     }
 
     /// <summary>
+    /// Gradually moves towards the next node in the path
+    /// </summary>
+    /// <param name="node"></param>
+    private void MoveTowardsNode(Transform node)
+    {
+        transform.position =
+            Vector3.MoveTowards(transform.position,
+                                node.position,
+                                Time.deltaTime * Speed);
+
+        if (CloseEnoughToCurrentNode)
+        {
+            // Selfdestruct if last node was hit
+            if (Path.PathSequence.Length - 1 == CurrentNodeId)
+            {
+                Destroy(gameObject);
+            }
+
+            if (CurrentSensorType != SensorType.NotASensor && CurrentSensorType != SensorType.WarningNode)
+            {
+                PressCurrentSensor();
+
+                if ((CurrentSensorType == SensorType.FirstSensorNode || CurrentSensorType == SensorType.ThirdSensorNode) &&
+                    (trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Red || trafficLightManager.CheckLightStatus(lightName) == TrafficLightStatus.Orange))
+                {
+                    // Light is red
+                    PauseMoving = true;
+                    return;
+                }
+            }
+            CurrentNodeId++;
+            previousNodeUnpressed = false;
+        }
+        if (!CloseEnoughToPreviousNode && !previousNodeUnpressed)
+        {
+            UnPressPreviousSensor();
+            previousNodeUnpressed = true;
+        }
+    }
+
+    /// <summary>
+    /// Indicates that the current sensor is pressed if the current node is actually a sensor
+    /// </summary>
+    private void PressCurrentSensor()
+    {
+        if (CurrentSensorType != SensorType.WarningNode && CurrentSensorType != SensorType.NotASensor)
+        {
+            string fullSensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
+            sensorManager.UpdateSensor(fullSensorName, (int)CurrentSensorType, 1);
+        }
+    }
+
+    /// <summary>
     /// Gradually rotates the vehicle to the direction its driving
     /// </summary>
     private void RotateTowardsNode(Transform node)
@@ -203,5 +207,62 @@ public class Move : MonoBehaviour
         float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
         Quaternion q = Quaternion.AngleAxis(angle - 90, Vector3.forward);
         transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * (Speed * RotationSpeedMultiplier));
+    }
+
+    /// <summary>
+    /// Runs on the initial load of this script
+    /// </summary>
+    private void Start()
+    {
+        sensorManager = SensorManager.Instance;
+        trafficLightManager = TrafficLightManager.Instance;
+        warningLightManager = WarningLightManager.Instance;
+        pathName = Path.PathSequence[0].parent.parent.parent.name;
+        lightName = GetCurrentTrafficlight();
+
+        //Make sure there is a path assigned
+        if (Path == null)
+        {
+            Debug.LogError("Movement Path cannot be null, I must have a path to follow.", gameObject);
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Indicates that the current sensor is no longer pressed if the current node is actually a sensor
+    /// </summary>
+    private void UnPressPreviousSensor()
+    {
+        if (PreviousSensorType != SensorType.WarningNode && PreviousSensorType != SensorType.NotASensor)
+        {
+            string fullSensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
+            sensorManager.UpdateSensor(fullSensorName, (int)PreviousSensorType, 0);
+        }
+    }
+
+    /// <summary>
+    /// Gets called every frame
+    /// </summary>
+    private void Update()
+    {
+        currentNode = Path.PathSequence[CurrentNodeId];
+
+        RotateTowardsNode(currentNode);
+        if (IsColliding())
+        {
+            PauseMoving = true;
+        }
+
+        if (!PauseMoving)
+        {
+            MoveTowardsNode(currentNode);
+        }
+        else
+        {
+            if (SafeToContinue)
+            {
+                PauseMoving = false;
+            }
+        }
     }
 }

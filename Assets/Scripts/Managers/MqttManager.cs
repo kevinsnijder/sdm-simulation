@@ -91,9 +91,9 @@ public class MqttManager : MonoBehaviour
             {
                 trafficLightManager.UpdateMotorisedLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
-            if(topic.IndexOf(LaneType.Vessel) != -1) 
+            if(topic.IndexOf(LaneType.Vessel) != -1 || topic.IndexOf(LaneType.Cycle) != -1) 
             {
-                trafficLightManager.UpdateVesselLight(topic, (TrafficLightStatus)int.Parse(msg));
+                trafficLightManager.UpdateOtherLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
         }
 

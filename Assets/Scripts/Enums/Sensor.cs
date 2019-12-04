@@ -1,4 +1,4 @@
-﻿public enum Sensor
+﻿public enum SensorType
 {
     FirstSensorNode = 0,
     SecondSensorNode = 1,

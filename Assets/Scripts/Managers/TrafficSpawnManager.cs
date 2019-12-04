@@ -11,8 +11,12 @@ public class TrafficSpawnManager : MonoBehaviour
 {
     public GameObject CarPrefab;
     public GameObject BoatPrefab;
+    public GameObject BikePrefab;
+
     public List<GameObject> CarPaths;
     public List<GameObject> BoatPaths;
+    public List<GameObject> BikePaths;
+
     private System.Random rnd = new System.Random();
 
     #region SINGLETON PATTERN
@@ -40,6 +44,7 @@ public class TrafficSpawnManager : MonoBehaviour
 
     public void SpawnRandom()
     {
+        //SpawnRandomCycle();
         int r = rnd.Next(21);
 
         switch(r)
@@ -52,7 +57,7 @@ public class TrafficSpawnManager : MonoBehaviour
                 break;
             // Vessel
             case 20:
-                SpawnRandomVessel();
+                //SpawnRandomVessel();
                 break;
             //// Track
             //case :
@@ -65,6 +70,22 @@ public class TrafficSpawnManager : MonoBehaviour
             //    break;
         }
 
+    }
+
+    private void SpawnRandomCycle()
+    {
+        Debug.Log("Spawning bike");
+
+        var bike = Instantiate(BikePrefab);
+
+        int r = rnd.Next(BikePaths.Count);
+
+        GameObject path = BikePaths[r];
+        PathLayout movementPath = path.GetComponent<PathLayout>();
+        bike.GetComponent<Move>().Path = movementPath;
+        bike.transform.position = movementPath.PathSequence[0].position;
+
+        Debug.Log("Created bike at (" + bike.transform.position.x + ", " + bike.transform.position.y + ", " + bike.transform.position.z + ")");
     }
 
     private void SpawnRandomMotorised()

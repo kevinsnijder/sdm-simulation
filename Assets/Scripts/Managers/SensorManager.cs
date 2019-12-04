@@ -55,9 +55,32 @@ public class SensorManager : MonoBehaviour
     internal void UpdateSensor(string pathName, int sensor, int sensorstatus)
     {
         mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor, sensorstatus.ToString());
+    }
 
-        //Thread.Sleep(1000);
-        //mqttManager.Publish(pathName.ToLower() + "/traffic_light/0", "2");
+    /// <summary>
+    /// Converts the sensor name to a sensor type
+    /// </summary>
+    /// <param name="sensorname">The name of the sensor to convert</param>
+    /// <returns></returns>
+    internal SensorType GetSensorType(string sensorname)
+    {
+        sensorname = sensorname.ToLower();
 
+        switch (sensorname)
+        {
+            case "sensor0":
+                return SensorType.FirstSensorNode;
+            case "sensor1":
+                return SensorType.SecondSensorNode;
+            case "sensor2":
+                return SensorType.ThirdSensorNode;
+            case "sensor3":
+                return SensorType.FourthSensorNode;
+            case "nodewarning":
+                return SensorType.WarningNode;
+            default:
+                return SensorType.NotASensor;
+            
+        }
     }
 }

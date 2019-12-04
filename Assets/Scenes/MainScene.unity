@@ -1050,7 +1050,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node2
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1182,7 +1182,7 @@ Transform:
   m_GameObject: {fileID: 203239913}
   m_LocalRotation: {x: -0, y: -0, z: 0.98036915, w: -0.19717114}
   m_LocalPosition: {x: -6.67, y: 0.899, z: 0}
-  m_LocalScale: {x: 0.59202, y: 0.59202, z: 0.59202}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 1764741751}
   m_RootOrder: 0
@@ -1224,7 +1224,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9d716c3442ed78246a7744d76258674f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96ee3c947f1393441af3a4bff007018f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1277,7 +1277,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node1
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1383,11 +1383,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b16df5569d19d4d86b4ef2630105dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CarPrefab: {fileID: 3599909773024791068, guid: 17dca1d464e11884dac0bd2407063131,
-    type: 3}
-  BoatPrefab: {fileID: 137545754507959518, guid: 2630983cefd4a7f468b2828cf0671015,
-    type: 3}
+  BikePaths:
+  - {fileID: 1997303140}
+  - {fileID: 1207430553}
+  - {fileID: 1007258089}
+  - {fileID: 1959491448}
+  - {fileID: 1585415283}
+  - {fileID: 1068144088}
+  - {fileID: 198320271}
   BikePrefab: {fileID: 7268410615059212652, guid: 7319ebc693465e142915f89da57f8597,
+    type: 3}
+  BoatPaths:
+  - {fileID: 1191733592}
+  - {fileID: 1282430170}
+  BoatPrefab: {fileID: 137545754507959518, guid: 2630983cefd4a7f468b2828cf0671015,
     type: 3}
   CarPaths:
   - {fileID: 657024523}
@@ -1401,17 +1410,8 @@ MonoBehaviour:
   - {fileID: 713223972}
   - {fileID: 515273386}
   - {fileID: 592929461}
-  BoatPaths:
-  - {fileID: 1191733592}
-  - {fileID: 1282430170}
-  BikePaths:
-  - {fileID: 1997303140}
-  - {fileID: 1207430553}
-  - {fileID: 1007258089}
-  - {fileID: 1959491448}
-  - {fileID: 1585415283}
-  - {fileID: 1068144088}
-  - {fileID: 198320271}
+  CarPrefab: {fileID: 3599909773024791068, guid: 17dca1d464e11884dac0bd2407063131,
+    type: 3}
 --- !u!1 &233195030
 GameObject:
   m_ObjectHideFlags: 0
@@ -1518,7 +1518,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node0
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1578,7 +1578,7 @@ GameObject:
   m_Layer: 0
   m_Name: Sensor1
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -2098,7 +2098,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node3
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -2358,7 +2358,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node0
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -3536,7 +3536,7 @@ GameObject:
   m_Layer: 0
   m_Name: Sensor0
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4148,7 +4148,7 @@ Transform:
   m_GameObject: {fileID: 666191540}
   m_LocalRotation: {x: -0, y: -0, z: 0.7861266, w: 0.61806554}
   m_LocalPosition: {x: -4.009, y: -0.59499955, z: 0}
-  m_LocalScale: {x: 0.59202, y: 0.59202, z: 0.59202}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 423696016}
   m_RootOrder: 1
@@ -4190,7 +4190,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9d716c3442ed78246a7744d76258674f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96ee3c947f1393441af3a4bff007018f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4243,7 +4243,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node5
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4848,7 +4848,7 @@ GameObject:
   m_Layer: 0
   m_Name: NodeWarning
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -5159,7 +5159,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node6
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -5879,7 +5879,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node1
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -6155,7 +6155,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node4
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -6438,7 +6438,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node0
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -6692,8 +6692,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134242873}
   m_LocalRotation: {x: -0, y: 0, z: -0.1650472, w: -0.98628575}
-  m_LocalPosition: {x: -6.297, y: 1.727, z: 0}
-  m_LocalScale: {x: 0.59202427, y: 0.59202427, z: 0.59202415}
+  m_LocalPosition: {x: -6.321, y: 1.799, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 1692408300}
   m_RootOrder: 0
@@ -6735,7 +6735,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9d716c3442ed78246a7744d76258674f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96ee3c947f1393441af3a4bff007018f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7176,7 +7176,7 @@ Transform:
   m_GameObject: {fileID: 1249108682}
   m_LocalRotation: {x: -0, y: 0, z: -0.07845902, w: -0.99691737}
   m_LocalPosition: {x: -6.334, y: 0.213, z: 0}
-  m_LocalScale: {x: 0.59202427, y: 0.59202427, z: 0.59202415}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 1764741751}
   m_RootOrder: 1
@@ -7218,7 +7218,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9d716c3442ed78246a7744d76258674f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96ee3c947f1393441af3a4bff007018f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7301,7 +7301,7 @@ GameObject:
   m_Layer: 0
   m_Name: NodeWarning
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -7441,7 +7441,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node3
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -7654,7 +7654,7 @@ Transform:
   m_GameObject: {fileID: 1335147315}
   m_LocalRotation: {x: 0, y: -0, z: 0.60459906, w: -0.79652995}
   m_LocalPosition: {x: -5.153, y: -1.016, z: 0}
-  m_LocalScale: {x: 0.59202427, y: 0.59202427, z: 0.59202415}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 423696016}
   m_RootOrder: 0
@@ -7696,7 +7696,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9d716c3442ed78246a7744d76258674f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96ee3c947f1393441af3a4bff007018f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7901,7 +7901,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node1
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -8034,7 +8034,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node6
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -8212,7 +8212,7 @@ GameObject:
   m_Layer: 0
   m_Name: Sensor0
   m_TagString: Untagged
-  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -8626,7 +8626,7 @@ GameObject:
   m_Layer: 0
   m_Name: Sensor3
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -8758,7 +8758,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node8
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -9127,7 +9127,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node4
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -9353,7 +9353,7 @@ Transform:
   m_GameObject: {fileID: 1698504299}
   m_LocalRotation: {x: -0, y: -0, z: 0.6284125, w: -0.7778803}
   m_LocalPosition: {x: -5.696, y: 0.064, z: 0}
-  m_LocalScale: {x: 0.59202427, y: 0.59202427, z: 0.59202415}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 288660610}
   m_RootOrder: 0
@@ -9395,7 +9395,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9d716c3442ed78246a7744d76258674f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96ee3c947f1393441af3a4bff007018f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -9462,7 +9462,7 @@ Transform:
   m_GameObject: {fileID: 1699183458}
   m_LocalRotation: {x: 0, y: -0, z: 0.66848177, w: -0.7437285}
   m_LocalPosition: {x: -6.106, y: 1.637, z: 0}
-  m_LocalScale: {x: 0.59202427, y: 0.59202427, z: 0.59202415}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 1770888503}
   m_RootOrder: 0
@@ -9504,7 +9504,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9d716c3442ed78246a7744d76258674f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96ee3c947f1393441af3a4bff007018f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -9677,7 +9677,7 @@ GameObject:
   m_Layer: 0
   m_Name: Sensor1
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -10119,7 +10119,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node3
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -10149,7 +10149,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node5
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -11306,7 +11306,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node7
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -11336,7 +11336,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node4
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -11396,7 +11396,7 @@ GameObject:
   m_Layer: 0
   m_Name: Node7
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -11505,7 +11505,7 @@ GameObject:
   m_Layer: 0
   m_Name: Sensor2
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -11614,7 +11614,7 @@ GameObject:
   m_Layer: 0
   m_Name: Sensor0
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

@@ -1,28 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ButtonPressListener : MonoBehaviour
 {
-    TrafficSpawnManager trafficSpawnManager;
-    MqttManager mqttManager;
     private bool backspacePressed = false;
-
+    private MqttManager mqttManager;
+    private TrafficSpawnManager trafficSpawnManager;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         this.trafficSpawnManager = TrafficSpawnManager.Instance;
         this.mqttManager = MqttManager.Instance;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Backspace))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if(!backspacePressed)
+            if (!backspacePressed)
             {
                 mqttManager.Publish("vessel/warning_light", "1");
             }

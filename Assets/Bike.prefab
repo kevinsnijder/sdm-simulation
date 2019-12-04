@@ -119,8 +119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 241045570d3dfa748811edad8ee70c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path: {fileID: 0}
+  CollisionDistance: 0.1
   MaxDistanceToGoal: 0.1
-  Speed: 1
+  Path: {fileID: 0}
   RotationSpeedMultiplier: 7
-  CollisionDistance: 0.15
+  Speed: 0.8

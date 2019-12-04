@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 using uPLibrary.Networking.M2Mqtt;
@@ -12,16 +9,21 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 /// </summary>
 public class MqttManager : MonoBehaviour
 {
+    #region Public variables
     public string brokerHostname = "arankieskamp.com";
     public int teamId = 10;
+    #endregion
+
+    #region Private variables
+    private MqttClient client;
     private TrafficLightManager trafficLightManager;
     private WarningLightManager warningLightManager;
+    #endregion
 
+    #region Singleton pattern
 
-    private MqttClient client;
-
-    #region SINGLETON PATTERN
     public static MqttManager _instance;
+
     public static MqttManager Instance
     {
         get
@@ -40,25 +42,53 @@ public class MqttManager : MonoBehaviour
             return _instance;
         }
     }
+
+    #endregion SINGLETON PATTERN
+
+    #region Public methods
+    public void Publish(string _topic, string msg)
+    {
+        string topic = teamId + "/" + _topic;
+        Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic);
+        client.Publish(
+            topic, Encoding.UTF8.GetBytes(msg),
+            MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
+    }
     #endregion
 
-    // Start is called before the first frame update
-    void Start()
+    #region Private methods
+    private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
-        trafficLightManager = TrafficLightManager.Instance;
-        warningLightManager = WarningLightManager.Instance;
-        Debug.Log("Connecting to " + brokerHostname);
-        Connect();
-        client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
-        byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE };
-        client.Subscribe(new string[] { teamId + "/#" }, qosLevels);
-        Publish("connect", "Simulation Online");
-    }
+        string msg = Encoding.UTF8.GetString(e.Message);
+        Debug.Log("Received message from " + e.Topic + " : " + msg);
 
-    // Update is called once per frame
-    void Update()
-    {
+        string topic = e.Topic.Substring(e.Topic.IndexOf('/') + 1);
 
+        // Check if its an update traffic statement
+        if (topic.IndexOf(ComponentType.TrafficLight) != -1)
+        {
+            if (topic.IndexOf(LaneType.Motorised) != -1 || topic.IndexOf(LaneType.Cycle) != -1)
+            {
+                trafficLightManager.UpdateLight(topic, (TrafficLightStatus)int.Parse(msg));
+            }
+            if (topic.IndexOf(LaneType.Vessel) != -1)
+            {
+                trafficLightManager.UpdateAlternativeLight(topic, (TrafficLightStatus)int.Parse(msg));
+            }
+        }
+
+        // Check if its an update warning light statement
+        if (topic.IndexOf(ComponentType.WarningLight) != -1)
+        {
+            if (topic.IndexOf(LaneType.Vessel) != -1)
+            {
+                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Vessel);
+            }
+            if (topic.IndexOf(LaneType.Track) != -1)
+            {
+                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Track);
+            }
+        }
     }
 
     private void Connect()
@@ -77,46 +107,22 @@ public class MqttManager : MonoBehaviour
         }
     }
 
-    void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+    // Start is called before the first frame update
+    private void Start()
     {
-        string msg = Encoding.UTF8.GetString(e.Message);
-        Debug.Log("Received message from " + e.Topic + " : " + msg);
-
-        string topic = e.Topic.Substring(e.Topic.IndexOf('/')+1);
-
-        // Check if its an update traffic statement
-        if (topic.IndexOf(ComponentType.TrafficLight) != -1)
-        {
-            if(topic.IndexOf(LaneType.Motorised) != -1) 
-            {
-                trafficLightManager.UpdateMotorisedLight(topic, (TrafficLightStatus)int.Parse(msg));
-            }
-            if(topic.IndexOf(LaneType.Vessel) != -1 || topic.IndexOf(LaneType.Cycle) != -1) 
-            {
-                trafficLightManager.UpdateOtherLight(topic, (TrafficLightStatus)int.Parse(msg));
-            }
-        }
-
-        // Check if its an update warning light statement
-        if(topic.IndexOf(ComponentType.WarningLight) != -1)
-        {
-            if(topic.IndexOf(LaneType.Vessel) != -1)
-            {
-                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Vessel);
-            }
-            if (topic.IndexOf(LaneType.Track) != -1)
-            {
-                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Track);
-            }
-        }
+        trafficLightManager = TrafficLightManager.Instance;
+        warningLightManager = WarningLightManager.Instance;
+        Debug.Log("Connecting to " + brokerHostname);
+        Connect();
+        client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+        byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE };
+        client.Subscribe(new string[] { teamId + "/#" }, qosLevels);
+        Publish("connect", "Simulation Online");
     }
 
-    public void Publish(string _topic, string msg)
+    // Update is called once per frame
+    private void Update()
     {
-        string topic = teamId + "/" + _topic;
-        Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic);
-        client.Publish(
-            topic, Encoding.UTF8.GetBytes(msg),
-            MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
     }
+    #endregion
 }

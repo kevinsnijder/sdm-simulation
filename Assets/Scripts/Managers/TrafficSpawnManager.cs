@@ -48,7 +48,7 @@ public class TrafficSpawnManager : MonoBehaviour
     public void SpawnRandom()
     {
         //SpawnRandomCycle();
-        int r = rnd.Next(21);
+        int r = rnd.Next(10);
 
         switch (r)
         {
@@ -67,14 +67,17 @@ public class TrafficSpawnManager : MonoBehaviour
             case 10:
                 SpawnRandomMotorised();
                 break;
+
             // Vessel
             case 20:
                 //SpawnRandomVessel();
                 break;
-            //// Track
+
+            // Track
             //case :
             //    break;
-            //// Cycle
+            
+            // Cycle
             case 11:
             case 12:
             case 13:
@@ -84,11 +87,12 @@ public class TrafficSpawnManager : MonoBehaviour
             case 17:
             case 18:
             case 19:
-                SpawnRandomCycle();
+                //SpawnRandomCycle();
                 break;
-                //// Foot
-                //case :
-                //    break;
+
+            // Foot
+            //case :
+            //    break;
         }
     }
     #endregion
@@ -146,7 +150,7 @@ public class TrafficSpawnManager : MonoBehaviour
     private void Start()
     {
          // Spawn random
-         //InvokeRepeating("SpawnRandom", 0f, 3);
+         InvokeRepeating("SpawnRandom", 0f, 5);
     }
 
     // Update is called once per frame

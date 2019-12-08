@@ -8,14 +8,17 @@ using UnityEngine;
 public class Move : MonoBehaviour
 {
     #region Public variables
+
     public float CollisionDistance;
     public float MaxDistanceToGoal = .1f;
     public PathLayout Path;
     public float RotationSpeedMultiplier = 7;
     public float Speed;
-    #endregion
+
+    #endregion Public variables
 
     #region Private variables
+
     private Transform currentNode;
     private int CurrentNodeId = 0;
     private string lightName;
@@ -24,10 +27,12 @@ public class Move : MonoBehaviour
     private bool previousNodeUnpressed = true;
     private SensorManager sensorManager;
     private TrafficLightManager trafficLightManager;
-    private WarningLightManager warningLightManager;
-    #endregion
+    private SpecialObjectManager warningLightManager;
+
+    #endregion Private variables
 
     #region Properties
+
     /// <summary>
     /// Checks if the current object is touching the node
     /// </summary>
@@ -98,7 +103,11 @@ public class Move : MonoBehaviour
                 {
                     return true;
                 }
-                if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode && !IsColliding())
+                if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode && !IsColliding() && sensorType != SensorType.WarningNode)
+                {
+                    return true;
+                }
+                if (sensorType == SensorType.WarningNode && warningLightManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
                 {
                     return true;
                 }
@@ -107,12 +116,13 @@ public class Move : MonoBehaviour
             return true;
         }
     }
-    #endregion
 
-    #region Public methods
-    #endregion
+    #endregion Properties
+
+
 
     #region Private methods
+
     /// <summary>
     /// Gets the name of the trafficlight this object has to check
     /// </summary>
@@ -187,6 +197,9 @@ public class Move : MonoBehaviour
             // Selfdestruct if last node was hit
             if (Path.PathSequence.Length - 1 == CurrentNodeId)
             {
+                if (this.gameObject.name.ToLower().Contains("train"))
+                    TrafficSpawnManager.Instance.TrainHasSpawned = false;
+
                 Destroy(gameObject);
             }
 
@@ -201,6 +214,11 @@ public class Move : MonoBehaviour
                     PauseMoving = true;
                     return;
                 }
+            }
+            if (CurrentSensorType == SensorType.WarningNode && warningLightManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Flashing)
+            {
+                PauseMoving = true;
+                return;
             }
             CurrentNodeId++;
             previousNodeUnpressed = false;
@@ -269,7 +287,7 @@ public class Move : MonoBehaviour
     {
         sensorManager = SensorManager.Instance;
         trafficLightManager = TrafficLightManager.Instance;
-        warningLightManager = WarningLightManager.Instance;
+        warningLightManager = SpecialObjectManager.Instance;
         pathName = Path.PathSequence[0].parent.parent.parent.name;
         lightName = GetCurrentTrafficlight();
 
@@ -327,7 +345,6 @@ public class Move : MonoBehaviour
     {
         currentNode = Path.PathSequence[CurrentNodeId];
 
-        RotateTowardsNode(currentNode);
         if (IsColliding())
         {
             PauseMoving = true;
@@ -335,6 +352,7 @@ public class Move : MonoBehaviour
 
         if (!PauseMoving)
         {
+            RotateTowardsNode(currentNode);
             MoveTowardsNode(currentNode);
         }
         else
@@ -345,5 +363,6 @@ public class Move : MonoBehaviour
             }
         }
     }
-    #endregion
+
+    #endregion Private methods
 }

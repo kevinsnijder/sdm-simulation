@@ -6,13 +6,15 @@
 public class PathLayout : MonoBehaviour
 {
     #region Public variables
-    public Transform[] PathSequence; //Array of all points in the path
-    #endregion Public Variables
 
-    #region Private variables
-    #endregion
+    public Transform[] PathSequence; //Array of all points in the path
+
+    #endregion Public variables
+
+
 
     #region Public methods
+
     /// <summary>
     /// Draws lines between nodes
     /// </summary>
@@ -32,12 +34,15 @@ public class PathLayout : MonoBehaviour
             Gizmos.DrawLine(PathSequence[i - 1].position, PathSequence[i].position);
         }
     }
-    #endregion
+
+    #endregion Public methods
 
     #region Private methods
+
     //Update is called by Unity every frame
     private void Update()
     {
     }
-    #endregion
+
+    #endregion Private methods
 }

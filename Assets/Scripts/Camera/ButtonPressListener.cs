@@ -20,11 +20,23 @@ public class ButtonPressListener : MonoBehaviour
         {
             if (!backspacePressed)
             {
-                mqttManager.Publish("vessel/warning_light", "1");
+                mqttManager.Publish("track/0/warning_light/0", "1");
+                mqttManager.Publish("vessel/0/warning_light/0", "1");
+
+                mqttManager.Publish("vessel/0/barrier/0", "1");
+                mqttManager.Publish("track/0/barrier/0", "1");
+
+                mqttManager.Publish("track/0/deck/0", "1");
             }
             else
             {
-                mqttManager.Publish("vessel/warning_light", "0");
+                mqttManager.Publish("track/0/warning_light/0", "0");
+                mqttManager.Publish("vessel/0/warning_light/0", "0");
+
+                mqttManager.Publish("vessel/0/barrier/0", "0");
+                mqttManager.Publish("track/0/barrier/0", "0");
+
+                mqttManager.Publish("track/0/deck/0", "0");
             }
             backspacePressed = !backspacePressed;
         }

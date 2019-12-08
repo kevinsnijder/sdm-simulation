@@ -8,6 +8,7 @@ using UnityEngine;
 public class TrafficLightManager : MonoBehaviour
 {
     #region Private variables
+
     private List<TrafficLight> alternativeLights = new List<TrafficLight>{
         new TrafficLight() { Name = "vessel/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red },
@@ -34,10 +35,10 @@ public class TrafficLightManager : MonoBehaviour
         new TrafficLight() { Name = "cycle/4/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "cycle/4/traffic_light/1", Status = TrafficLightStatus.Red }
     };
-    #endregion
 
-    #region Public variables
-    #endregion
+    #endregion Private variables
+
+
 
     #region Singleton pattern
 
@@ -62,9 +63,10 @@ public class TrafficLightManager : MonoBehaviour
         }
     }
 
-    #endregion SINGLETON PATTERN
+    #endregion Singleton pattern
 
     #region Public methods
+
     /// <summary>
     /// Gets the status of a light
     /// </summary>
@@ -98,9 +100,11 @@ public class TrafficLightManager : MonoBehaviour
             trafficLights.Find(a => a.Name == lightName.Replace('0', '1')).UpdateRequired = true;
         }
     }
-    #endregion
+
+    #endregion Public methods
 
     #region Private methods
+
     /// <summary>
     /// Updates a light with 2 statuses to the preferred status
     /// </summary>
@@ -171,5 +175,6 @@ public class TrafficLightManager : MonoBehaviour
             }
         }
     }
-    #endregion
+
+    #endregion Private methods
 }

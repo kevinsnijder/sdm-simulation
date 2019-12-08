@@ -6,20 +6,28 @@ using UnityEngine;
 /// </summary>
 public class TrafficSpawnManager : MonoBehaviour
 {
+    public int SpawnCooldownSeconds = 1;
+
     #region Public variables
+
     public List<GameObject> BikePaths;
-    public GameObject BikePrefab;    
-    public List<GameObject> TrainPaths;
-    public GameObject TrainPrefab;
+    public GameObject BikePrefab;
     public List<GameObject> BoatPaths;
     public GameObject BoatPrefab;
     public List<GameObject> CarPaths;
     public GameObject CarPrefab;
-    #endregion
+    public List<GameObject> TrainPaths;
+    public GameObject TrainPrefab;
+
+    #endregion Public variables
+
+    internal bool TrainHasSpawned = false;
 
     #region Private variables
+
     private System.Random rnd = new System.Random();
-    #endregion
+
+    #endregion Private variables
 
     #region Singleton pattern
 
@@ -44,13 +52,13 @@ public class TrafficSpawnManager : MonoBehaviour
         }
     }
 
-    #endregion SINGLETON PATTERN
+    #endregion Singleton pattern
 
     #region Public methods
+
     public void SpawnRandom()
     {
-        SpawnRandomTrain();
-        /*int r = rnd.Next(21);
+        int r = rnd.Next(21);
 
         switch (r)
         {
@@ -77,9 +85,13 @@ public class TrafficSpawnManager : MonoBehaviour
 
             // Track
             case 11:
-                SpawnRandomTrain();
+                if (!TrainHasSpawned)
+                {
+                    TrainHasSpawned = true;
+                    SpawnRandomTrain();
+                }
                 break;
-            
+
             // Cycle
             case 12:
             case 13:
@@ -92,14 +104,16 @@ public class TrafficSpawnManager : MonoBehaviour
                 SpawnRandomCycle();
                 break;
 
-            // Foot
-            //case :
-            //    break;
-        }*/
+                // Foot
+                //case :
+                //    break;
+        }
     }
-    #endregion
+
+    #endregion Public methods
 
     #region Private methods
+
     private void SpawnRandomCycle()
     {
         Debug.Log("Spawning bike");
@@ -112,8 +126,6 @@ public class TrafficSpawnManager : MonoBehaviour
         PathLayout movementPath = path.GetComponent<PathLayout>();
         bike.GetComponent<Move>().Path = movementPath;
         bike.transform.position = movementPath.PathSequence[0].position;
-
-        Debug.Log("Created bike at (" + bike.transform.position.x + ", " + bike.transform.position.y + ", " + bike.transform.position.z + ")");
     }
 
     private void SpawnRandomMotorised()
@@ -128,8 +140,6 @@ public class TrafficSpawnManager : MonoBehaviour
         PathLayout movementPath = path.GetComponent<PathLayout>();
         motorised.GetComponent<Move>().Path = movementPath;
         motorised.transform.position = movementPath.PathSequence[0].position;
-
-        Debug.Log("Created motorised at (" + motorised.transform.position.x + ", " + motorised.transform.position.y + ", " + motorised.transform.position.z + ")");
     }
 
     private void SpawnRandomTrain()
@@ -144,8 +154,6 @@ public class TrafficSpawnManager : MonoBehaviour
         PathLayout movementPath = path.GetComponent<PathLayout>();
         train.GetComponent<Move>().Path = movementPath;
         train.transform.position = movementPath.PathSequence[0].position;
-
-        Debug.Log("Created train at (" + train.transform.position.x + ", " + train.transform.position.y + ", " + train.transform.position.z + ")");
     }
 
     private void SpawnRandomVessel()
@@ -160,20 +168,19 @@ public class TrafficSpawnManager : MonoBehaviour
         PathLayout movementPath = path.GetComponent<PathLayout>();
         vessel.GetComponent<Move>().Path = movementPath;
         vessel.transform.position = movementPath.PathSequence[0].position;
-
-        Debug.Log("Created boat at (" + vessel.transform.position.x + ", " + vessel.transform.position.y + ", " + vessel.transform.position.z + ")");
     }
 
     // Start is called before the first frame update
     private void Start()
     {
-         // Spawn random
-         //InvokeRepeating("SpawnRandom", 0f, 5);
+        // Spawn random
+        InvokeRepeating("SpawnRandom", 0f, SpawnCooldownSeconds);
     }
 
     // Update is called once per frame
     private void Update()
     {
     }
-    #endregion
+
+    #endregion Private methods
 }

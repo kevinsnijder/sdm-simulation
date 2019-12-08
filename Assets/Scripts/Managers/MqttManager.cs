@@ -10,15 +10,19 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 public class MqttManager : MonoBehaviour
 {
     #region Public variables
+
     public string brokerHostname = "arankieskamp.com";
     public int teamId = 10;
-    #endregion
+
+    #endregion Public variables
 
     #region Private variables
+
     private MqttClient client;
     private TrafficLightManager trafficLightManager;
-    private WarningLightManager warningLightManager;
-    #endregion
+    private SpecialObjectManager warningLightManager;
+
+    #endregion Private variables
 
     #region Singleton pattern
 
@@ -43,9 +47,10 @@ public class MqttManager : MonoBehaviour
         }
     }
 
-    #endregion SINGLETON PATTERN
+    #endregion Singleton pattern
 
     #region Public methods
+
     public void Publish(string _topic, string msg)
     {
         string topic = teamId + "/" + _topic;
@@ -54,9 +59,11 @@ public class MqttManager : MonoBehaviour
             topic, Encoding.UTF8.GetBytes(msg),
             MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
     }
-    #endregion
+
+    #endregion Public methods
 
     #region Private methods
+
     private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
         string msg = Encoding.UTF8.GetString(e.Message);
@@ -82,12 +89,30 @@ public class MqttManager : MonoBehaviour
         {
             if (topic.IndexOf(LaneType.Vessel) != -1)
             {
-                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Vessel);
+                warningLightManager.UpdateWarningLight((WarningLightStatus)int.Parse(msg), LaneType.Vessel);
             }
             if (topic.IndexOf(LaneType.Track) != -1)
             {
-                warningLightManager.UpdateWarningLight(topic, (WarningLightStatus)int.Parse(msg), LaneType.Track);
+                warningLightManager.UpdateWarningLight((WarningLightStatus)int.Parse(msg), LaneType.Track);
             }
+        }
+
+        // Check if its a barrier statement
+        if (topic.IndexOf(ComponentType.Barrier) != -1)
+        {
+            if (topic.IndexOf(LaneType.Vessel) != -1)
+            {
+                warningLightManager.UpdateBarriers((BarrierStatus)int.Parse(msg), LaneType.Vessel);
+            }
+            if (topic.IndexOf(LaneType.Track) != -1)
+            {
+                warningLightManager.UpdateBarriers((BarrierStatus)int.Parse(msg), LaneType.Track);
+            }
+        }
+
+        if (topic.IndexOf(ComponentType.Deck) != -1)
+        {
+            warningLightManager.UpdateDeck((DeckStatus)int.Parse(msg));
         }
     }
 
@@ -111,7 +136,7 @@ public class MqttManager : MonoBehaviour
     private void Start()
     {
         trafficLightManager = TrafficLightManager.Instance;
-        warningLightManager = WarningLightManager.Instance;
+        warningLightManager = SpecialObjectManager.Instance;
         Debug.Log("Connecting to " + brokerHostname);
         Connect();
         client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
@@ -123,5 +148,6 @@ public class MqttManager : MonoBehaviour
     private void Update()
     {
     }
-    #endregion
+
+    #endregion Private methods
 }

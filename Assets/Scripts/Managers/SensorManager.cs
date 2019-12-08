@@ -5,12 +5,11 @@
 /// </summary>
 public class SensorManager : MonoBehaviour
 {
-    #region Public variables
-    #endregion
-
     #region Private variables
+
     private MqttManager mqttManager;
-    #endregion
+
+    #endregion Private variables
 
     #region Singleton pattern
 
@@ -35,9 +34,10 @@ public class SensorManager : MonoBehaviour
         }
     }
 
-    #endregion SINGLETON PATTERN
+    #endregion Singleton pattern
 
     #region Public methods
+
     /// <summary>
     /// Converts the sensor name to a sensor type
     /// </summary>
@@ -79,9 +79,11 @@ public class SensorManager : MonoBehaviour
     {
         mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor, sensorstatus.ToString());
     }
-    #endregion
+
+    #endregion Public methods
 
     #region Private methods
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -92,5 +94,6 @@ public class SensorManager : MonoBehaviour
     private void Update()
     {
     }
-    #endregion
+
+    #endregion Private methods
 }

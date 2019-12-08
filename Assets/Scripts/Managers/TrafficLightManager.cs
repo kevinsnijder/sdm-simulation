@@ -10,7 +10,9 @@ public class TrafficLightManager : MonoBehaviour
     #region Private variables
     private List<TrafficLight> alternativeLights = new List<TrafficLight>{
         new TrafficLight() { Name = "vessel/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red }
+        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "track/0/train_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "track/0/train_light/1", Status = TrafficLightStatus.Red }
     };
 
     private List<TrafficLight> trafficLights = new List<TrafficLight>(){ // Whoops hardcoded lights, gotta fix this some time

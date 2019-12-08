@@ -49,7 +49,7 @@ public class MqttManager : MonoBehaviour
     public void Publish(string _topic, string msg)
     {
         string topic = teamId + "/" + _topic;
-        Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic);
+        //Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic);
         client.Publish(
             topic, Encoding.UTF8.GetBytes(msg),
             MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
@@ -65,13 +65,13 @@ public class MqttManager : MonoBehaviour
         string topic = e.Topic.Substring(e.Topic.IndexOf('/') + 1);
 
         // Check if its an update traffic statement
-        if (topic.IndexOf(ComponentType.TrafficLight) != -1)
+        if (topic.IndexOf(ComponentType.TrafficLight) != -1 || topic.IndexOf(ComponentType.TrainLight) != -1)
         {
             if (topic.IndexOf(LaneType.Motorised) != -1 || topic.IndexOf(LaneType.Cycle) != -1)
             {
                 trafficLightManager.UpdateLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
-            if (topic.IndexOf(LaneType.Vessel) != -1)
+            if (topic.IndexOf(LaneType.Vessel) != -1 || topic.IndexOf(LaneType.Track) != -1)
             {
                 trafficLightManager.UpdateAlternativeLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
@@ -95,7 +95,7 @@ public class MqttManager : MonoBehaviour
     {
         Debug.Log("About to connect on '" + brokerHostname + "'");
         client = new MqttClient(brokerHostname);
-        string clientId = Guid.NewGuid().ToString();
+        string clientId = "KevinsHerpesSimulatie";
         try
         {
             client.Connect(clientId);
@@ -117,7 +117,6 @@ public class MqttManager : MonoBehaviour
         client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
         byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE };
         client.Subscribe(new string[] { teamId + "/#" }, qosLevels);
-        Publish("connect", "Simulation Online");
     }
 
     // Update is called once per frame

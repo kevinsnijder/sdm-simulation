@@ -8,7 +8,9 @@ public class TrafficSpawnManager : MonoBehaviour
 {
     #region Public variables
     public List<GameObject> BikePaths;
-    public GameObject BikePrefab;
+    public GameObject BikePrefab;    
+    public List<GameObject> TrainPaths;
+    public GameObject TrainPrefab;
     public List<GameObject> BoatPaths;
     public GameObject BoatPrefab;
     public List<GameObject> CarPaths;
@@ -47,8 +49,8 @@ public class TrafficSpawnManager : MonoBehaviour
     #region Public methods
     public void SpawnRandom()
     {
-        //SpawnRandomCycle();
-        int r = rnd.Next(10);
+        SpawnRandomTrain();
+        /*int r = rnd.Next(21);
 
         switch (r)
         {
@@ -74,11 +76,11 @@ public class TrafficSpawnManager : MonoBehaviour
                 break;
 
             // Track
-            //case :
-            //    break;
+            case 11:
+                SpawnRandomTrain();
+                break;
             
             // Cycle
-            case 11:
             case 12:
             case 13:
             case 14:
@@ -87,13 +89,13 @@ public class TrafficSpawnManager : MonoBehaviour
             case 17:
             case 18:
             case 19:
-                //SpawnRandomCycle();
+                SpawnRandomCycle();
                 break;
 
             // Foot
             //case :
             //    break;
-        }
+        }*/
     }
     #endregion
 
@@ -130,6 +132,22 @@ public class TrafficSpawnManager : MonoBehaviour
         Debug.Log("Created motorised at (" + motorised.transform.position.x + ", " + motorised.transform.position.y + ", " + motorised.transform.position.z + ")");
     }
 
+    private void SpawnRandomTrain()
+    {
+        Debug.Log("Spawning train");
+
+        var train = Instantiate(TrainPrefab);
+
+        int r = rnd.Next(TrainPaths.Count);
+
+        GameObject path = TrainPaths[r];
+        PathLayout movementPath = path.GetComponent<PathLayout>();
+        train.GetComponent<Move>().Path = movementPath;
+        train.transform.position = movementPath.PathSequence[0].position;
+
+        Debug.Log("Created train at (" + train.transform.position.x + ", " + train.transform.position.y + ", " + train.transform.position.z + ")");
+    }
+
     private void SpawnRandomVessel()
     {
         Debug.Log("Spawning vessel");
@@ -150,7 +168,7 @@ public class TrafficSpawnManager : MonoBehaviour
     private void Start()
     {
          // Spawn random
-         InvokeRepeating("SpawnRandom", 0f, 5);
+         //InvokeRepeating("SpawnRandom", 0f, 5);
     }
 
     // Update is called once per frame

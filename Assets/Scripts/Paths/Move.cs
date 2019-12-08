@@ -123,7 +123,7 @@ public class Move : MonoBehaviour
 
         string lightName = currentNode.parent.parent.parent.parent.name + "/" + pathName + "/traffic_light/0";
 
-        // Override lightname when this object is a bike
+        // Override lightname when this object is a bike or a train
         if (this.gameObject.name.ToLower().Contains("bike"))
         {
             if (currentNode.parent.parent.name == "path0")
@@ -133,6 +133,18 @@ public class Move : MonoBehaviour
             else
             {
                 lightName = currentNode.parent.parent.parent.parent.name + "/" + pathName + "/traffic_light/1";
+            }
+        }
+        if (this.gameObject.name.ToLower().Contains("train"))
+        {
+            pathName = "0";
+            if (currentNode.parent.parent.name == "path0")
+            {
+                lightName = currentNode.parent.parent.parent.name + "/0/train_light/0";
+            }
+            else
+            {
+                lightName = currentNode.parent.parent.parent.name + "/0/train_light/1";
             }
         }
         return lightName;
@@ -207,8 +219,35 @@ public class Move : MonoBehaviour
     {
         if (CurrentSensorType != SensorType.WarningNode && CurrentSensorType != SensorType.NotASensor)
         {
-            string fullSensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
-            sensorManager.UpdateSensor(fullSensorName, (int)CurrentSensorType, 1);
+            string trackName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
+            if (this.gameObject.name.ToLower().Contains("train"))
+            {
+                trackName = currentNode.parent.parent.parent.name + "/" + pathName;
+
+                if (currentNode.parent.name != "path0")
+                {
+                    if (currentNode.name.Contains("0"))
+                    {
+                        sensorManager.UpdateSensor(trackName, (int)SensorType.ThirdSensorNode, 1);
+                    }
+                    else if (currentNode.name.Contains("2"))
+                    {
+                        sensorManager.UpdateSensor(trackName, (int)SensorType.FirstSensorNode, 1);
+                    }
+                    else
+                    {
+                        sensorManager.UpdateSensor(trackName, (int)SensorType.SecondSensorNode, 1);
+                    }
+                }
+                else
+                {
+                    sensorManager.UpdateSensor(trackName, (int)CurrentSensorType, 1);
+                }
+            }
+            else
+            {
+                sensorManager.UpdateSensor(trackName, (int)CurrentSensorType, 1);
+            }
         }
     }
 
@@ -249,8 +288,35 @@ public class Move : MonoBehaviour
     {
         if (PreviousSensorType != SensorType.WarningNode && PreviousSensorType != SensorType.NotASensor)
         {
-            string fullSensorName = currentNode.parent.parent.parent.parent.name + "/" + pathName;
-            sensorManager.UpdateSensor(fullSensorName, (int)PreviousSensorType, 0);
+            string trackName = Path.PathSequence[CurrentNodeId - 1].parent.parent.parent.parent.name + "/" + pathName;
+            if (this.gameObject.name.ToLower().Contains("train"))
+            {
+                trackName = Path.PathSequence[CurrentNodeId - 1].parent.parent.parent.name + "/" + pathName;
+
+                if (Path.PathSequence[CurrentNodeId - 1].parent.name != "path0")
+                {
+                    if (Path.PathSequence[CurrentNodeId - 1].name.Contains("0"))
+                    {
+                        sensorManager.UpdateSensor(trackName, (int)SensorType.ThirdSensorNode, 0);
+                    }
+                    else if (Path.PathSequence[CurrentNodeId - 1].name.Contains("2"))
+                    {
+                        sensorManager.UpdateSensor(trackName, (int)SensorType.FirstSensorNode, 0);
+                    }
+                    else
+                    {
+                        sensorManager.UpdateSensor(trackName, (int)SensorType.SecondSensorNode, 0);
+                    }
+                }
+                else
+                {
+                    sensorManager.UpdateSensor(trackName, (int)PreviousSensorType, 0);
+                }
+            }
+            else
+            {
+                sensorManager.UpdateSensor(trackName, (int)PreviousSensorType, 0);
+            }
         }
     }
 

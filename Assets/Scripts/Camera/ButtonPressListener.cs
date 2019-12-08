@@ -86,5 +86,10 @@ public class ButtonPressListener : MonoBehaviour
             mqttManager.Publish("cycle/4/traffic_light/0", "2");
             mqttManager.Publish("cycle/4/traffic_light/1", "2");
         }
+        if (Input.GetKeyDown(KeyCode.Comma))
+        {
+            mqttManager.Publish("track/0/train_light/0", "2");
+            mqttManager.Publish("track/0/train_light/1", "2");
+        }
     }
 }

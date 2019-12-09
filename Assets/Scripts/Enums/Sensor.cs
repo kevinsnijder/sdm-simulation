@@ -6,5 +6,6 @@
     FourthSensorNode = 3,
     WarningNode = 4,
     RemoveWarningNode = 5,
+    BarrierNode = 6,
     NotASensor = 999,
 }

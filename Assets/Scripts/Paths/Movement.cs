@@ -155,6 +155,8 @@ public class Movement : MonoBehaviour
                     return true;
                 if (sensorType == SensorType.WarningNode && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
                     return true;
+                if (sensorType == SensorType.BarrierNode && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
+                    return true;
                 return false;
             }
             return true;
@@ -258,6 +260,11 @@ public class Movement : MonoBehaviour
                 PauseMoving = true;
                 return;
             }
+            if (CurrentSensorType == SensorType.BarrierNode && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Flashing)
+            {
+                PauseMoving = true;
+                return;
+            }
             CurrentNodeId++;
             PreviousNodeUnpressed = false;
         }
@@ -274,7 +281,7 @@ public class Movement : MonoBehaviour
     private void PressCurrentSensor()
     {
         string trackName = CurrentNode.parent.parent.parent.parent.name + "/" + PathName;
-        if (CurrentSensorType != SensorType.WarningNode && CurrentSensorType != SensorType.NotASensor && CurrentSensorType != SensorType.RemoveWarningNode)
+        if (CurrentSensorType != SensorType.WarningNode && CurrentSensorType != SensorType.NotASensor && CurrentSensorType != SensorType.RemoveWarningNode && CurrentSensorType != SensorType.BarrierNode)
         {
             if ((IsTrain || IsBoat) && CurrentNode.parent.parent.name != "path0")
             {
@@ -293,7 +300,7 @@ public class Movement : MonoBehaviour
         if (CurrentSensorType == SensorType.RemoveWarningNode)
         {
             if (IsBoat)
-                SpecialObjectManager.RemoveBoatUnderneethDeck();
+                SpecialObjectManager.RemoveBoatUnderneathDeck();
             else
                 SpecialObjectManager.RemoveVehicleFromDeck();
         }
@@ -334,7 +341,7 @@ public class Movement : MonoBehaviour
     /// </summary>
     private void UnPressPreviousSensor()
     {
-        if (PreviousSensorType != SensorType.WarningNode && PreviousSensorType != SensorType.NotASensor && PreviousSensorType != SensorType.RemoveWarningNode)
+        if (PreviousSensorType != SensorType.WarningNode && PreviousSensorType != SensorType.NotASensor && PreviousSensorType != SensorType.RemoveWarningNode && PreviousSensorType != SensorType.BarrierNode)
         {
             string trackName = CurrentNode.parent.parent.parent.parent.name + "/" + PathName;
             if ((IsTrain || IsBoat) && Path.PathSequence[CurrentNodeId - 1].parent.parent.name != "path0")
@@ -351,7 +358,7 @@ public class Movement : MonoBehaviour
                 SensorManager.UpdateSensor(trackName, (int)PreviousSensorType, 0);
             }
         }
-        if (PreviousSensorType == SensorType.WarningNode)
+        if (PreviousSensorType == SensorType.BarrierNode)
         {
             //Press the deck sensor
             SpecialObjectManager.AddVehicleToDeck();
@@ -359,7 +366,7 @@ public class Movement : MonoBehaviour
         if (IsBoat && PreviousSensorType == SensorType.FirstSensorNode)
         {
             //Press underneeth deck sensor
-            SpecialObjectManager.AddBoatUnderneethDeck();
+            SpecialObjectManager.AddBoatUnderneathDeck();
         }
     }
 

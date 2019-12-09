@@ -67,6 +67,9 @@ public class SensorManager : MonoBehaviour
             case "noderemovewarning":
                 return SensorType.RemoveWarningNode;
 
+            case "nodebarrier":
+                return SensorType.BarrierNode;
+
             default:
                 return SensorType.NotASensor;
         }

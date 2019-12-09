@@ -18,7 +18,7 @@ public class SpecialObjectManager : MonoBehaviour
     private readonly Barrier VesselBarriers = new Barrier() { Name = "vessel/0/barrier/0", Status = BarrierStatus.Open };
     private readonly WarningLight VesselWarningLight = new WarningLight() { Name = "vessel/0/warning_light/0", Status = WarningLightStatus.Off };
     private int TotalVehiclesOnDeck = 0;
-    private int TotalBoatsUnderneethBridge = 0;
+    private int TotalBoatsUnderneathBridge = 0;
 
     #endregion Private variables
 
@@ -76,23 +76,23 @@ public class SpecialObjectManager : MonoBehaviour
     /// <summary>
     /// Adds a boat to the total boat count underneeth the deck
     /// </summary>
-    public void AddBoatUnderneethDeck()
+    public void AddBoatUnderneathDeck()
     {
-        if(TotalBoatsUnderneethBridge == 0)
+        if(TotalBoatsUnderneathBridge == 0)
         {
             Debug.Log("Not safe to close bridge");
             MqttManager.Publish("vessel/0/sensor/1", "1");
         }
-        TotalBoatsUnderneethBridge++;
+        TotalBoatsUnderneathBridge++;
     }
 
     /// <summary>
     /// Removes a boat from the total boat count underneeth the deck
     /// </summary>
-    public void RemoveBoatUnderneethDeck()
+    public void RemoveBoatUnderneathDeck()
     {
-        TotalBoatsUnderneethBridge--;
-        if (TotalBoatsUnderneethBridge == 0)
+        TotalBoatsUnderneathBridge--;
+        if (TotalBoatsUnderneathBridge == 0)
         {
             Debug.Log("Safe to close bridge");
             MqttManager.Publish("vessel/0/sensor/1", "0");

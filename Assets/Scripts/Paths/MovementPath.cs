@@ -3,15 +3,13 @@
 /// <summary>
 /// Predefined driveable path
 /// </summary>
-public class PathLayout : MonoBehaviour
+public class MovementPath : MonoBehaviour
 {
     #region Public variables
 
     public Transform[] PathSequence; //Array of all points in the path
 
     #endregion Public variables
-
-
 
     #region Public methods
 

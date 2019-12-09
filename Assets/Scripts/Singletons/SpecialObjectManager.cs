@@ -5,13 +5,20 @@
 /// </summary>
 public class SpecialObjectManager : MonoBehaviour
 {
+    #region Public variables
+
+    #endregion
+
     #region Private variables
 
-    private Deck deck = new Deck() { Name = "vessel/0/deck/0", Status = DeckStatus.Closed };
-    private Barrier trackBarriers = new Barrier() { Name = "track/0/barrier/0", Status = BarrierStatus.Open };
-    private WarningLight trackWarningLight = new WarningLight() { Name = "track/0/warning_light/0", Status = WarningLightStatus.Off };
-    private Barrier vesselBarriers = new Barrier() { Name = "vessel/0/barrier/0", Status = BarrierStatus.Open };
-    private WarningLight vesselWarningLight = new WarningLight() { Name = "vessel/0/warning_light/0", Status = WarningLightStatus.Off };
+    private MqttManager MqttManager;
+    private readonly Deck Deck = new Deck() { Name = "vessel/0/deck/0", Status = DeckStatus.Closed };
+    private readonly Barrier TrackBarriers = new Barrier() { Name = "track/0/barrier/0", Status = BarrierStatus.Open };
+    private readonly WarningLight TrackWarningLight = new WarningLight() { Name = "track/0/warning_light/0", Status = WarningLightStatus.Off };
+    private readonly Barrier VesselBarriers = new Barrier() { Name = "vessel/0/barrier/0", Status = BarrierStatus.Open };
+    private readonly WarningLight VesselWarningLight = new WarningLight() { Name = "vessel/0/warning_light/0", Status = WarningLightStatus.Off };
+    private int TotalVehiclesOnDeck = 0;
+    private int TotalBoatsUnderneethBridge = 0;
 
     #endregion Private variables
 
@@ -43,19 +50,69 @@ public class SpecialObjectManager : MonoBehaviour
     #region Public methods
 
     /// <summary>
+    /// Adds a vehicle to the total count of vehicles on top of the deck
+    /// </summary>
+    public void AddVehicleToDeck()
+    {
+        if(TotalVehiclesOnDeck == 0)
+        {
+            MqttManager.Publish("vessel/0/sensor/3", "1");
+        }
+        TotalVehiclesOnDeck++;
+    }
+
+    /// <summary>
+    /// Removes a vehicle from the total count of vehicles on top of the deck
+    /// </summary>
+    public void RemoveVehicleFromDeck()
+    {
+        TotalVehiclesOnDeck--;
+        if (TotalVehiclesOnDeck == 0)
+        {
+            MqttManager.Publish("vessel/0/sensor/3", "0");
+        }
+    }
+
+    /// <summary>
+    /// Adds a boat to the total boat count underneeth the deck
+    /// </summary>
+    public void AddBoatUnderneethDeck()
+    {
+        if(TotalBoatsUnderneethBridge == 0)
+        {
+            Debug.Log("Not safe to close bridge");
+            MqttManager.Publish("vessel/0/sensor/1", "1");
+        }
+        TotalBoatsUnderneethBridge++;
+    }
+
+    /// <summary>
+    /// Removes a boat from the total boat count underneeth the deck
+    /// </summary>
+    public void RemoveBoatUnderneethDeck()
+    {
+        TotalBoatsUnderneethBridge--;
+        if (TotalBoatsUnderneethBridge == 0)
+        {
+            Debug.Log("Safe to close bridge");
+            MqttManager.Publish("vessel/0/sensor/1", "0");
+        }
+    }
+
+    /// <summary>
     /// Gets the status of a light
     /// </summary>
     /// <param name="lightName">Ex. motorised/6/traffic_light/0</param>
     /// <returns></returns>
     public WarningLightStatus CheckLightStatus(string lightName)
     {
-        if (lightName == vesselWarningLight.Name)
+        if (lightName == VesselWarningLight.Name)
         {
-            return vesselWarningLight.Status;
+            return VesselWarningLight.Status;
         }
-        else if (lightName == trackWarningLight.Name)
+        else if (lightName == TrackWarningLight.Name)
         {
-            return trackWarningLight.Status;
+            return TrackWarningLight.Status;
         }
         else
         {
@@ -72,13 +129,13 @@ public class SpecialObjectManager : MonoBehaviour
     {
         if (laneType == LaneType.Vessel)
         {
-            vesselBarriers.Status = status;
-            vesselBarriers.UpdateRequired = true;
+            VesselBarriers.Status = status;
+            VesselBarriers.UpdateRequired = true;
         }
         if (laneType == LaneType.Track)
         {
-            trackBarriers.Status = status;
-            trackBarriers.UpdateRequired = true;
+            TrackBarriers.Status = status;
+            TrackBarriers.UpdateRequired = true;
         }
     }
 
@@ -89,8 +146,8 @@ public class SpecialObjectManager : MonoBehaviour
     /// <param name="status">Status of the barrier</param>
     public void UpdateDeck(DeckStatus status)
     {
-        deck.Status = status;
-        deck.UpdateRequired = true;
+        Deck.Status = status;
+        Deck.UpdateRequired = true;
     }
 
     /// <summary>
@@ -102,13 +159,13 @@ public class SpecialObjectManager : MonoBehaviour
     {
         if (laneType == LaneType.Vessel)
         {
-            vesselWarningLight.Status = status;
-            vesselWarningLight.UpdateRequired = true;
+            VesselWarningLight.Status = status;
+            VesselWarningLight.UpdateRequired = true;
         }
         if (laneType == LaneType.Track)
         {
-            trackWarningLight.Status = status;
-            trackWarningLight.UpdateRequired = true;
+            TrackWarningLight.Status = status;
+            TrackWarningLight.UpdateRequired = true;
         }
     }
 
@@ -119,30 +176,31 @@ public class SpecialObjectManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        this.MqttManager = MqttManager.Instance;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (vesselWarningLight.UpdateRequired)
+        if (VesselWarningLight.UpdateRequired)
         {
-            UpdateSprite(vesselWarningLight);
+            UpdateSprite(VesselWarningLight);
         }
-        if (trackWarningLight.UpdateRequired)
+        if (TrackWarningLight.UpdateRequired)
         {
-            UpdateSprite(trackWarningLight);
+            UpdateSprite(TrackWarningLight);
         }
-        if (trackBarriers.UpdateRequired)
+        if (TrackBarriers.UpdateRequired)
         {
-            UpdateSprite(trackBarriers);
+            UpdateSprite(TrackBarriers);
         }
-        if (vesselBarriers.UpdateRequired)
+        if (VesselBarriers.UpdateRequired)
         {
-            UpdateSprite(vesselBarriers);
+            UpdateSprite(VesselBarriers);
         }
-        if (deck.UpdateRequired)
+        if (Deck.UpdateRequired)
         {
-            UpdateSprite(deck);
+            UpdateSprite(Deck);
         }
     }
 

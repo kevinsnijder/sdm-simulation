@@ -72,6 +72,9 @@ public class TrafficSpawnManager : MonoBehaviour
             case 5:
             case 6:
             case 7:
+            case 12:
+            case 13:
+            case 14:
             case 8:
             case 9:
             case 10:
@@ -80,7 +83,7 @@ public class TrafficSpawnManager : MonoBehaviour
 
             // Vessel
             case 20:
-                //SpawnRandomVessel();
+                SpawnRandomVessel();
                 break;
 
             // Track
@@ -93,9 +96,6 @@ public class TrafficSpawnManager : MonoBehaviour
                 break;
 
             // Cycle
-            case 12:
-            case 13:
-            case 14:
             case 15:
             case 16:
             case 17:
@@ -116,57 +116,49 @@ public class TrafficSpawnManager : MonoBehaviour
 
     private void SpawnRandomCycle()
     {
-        Debug.Log("Spawning bike");
-
         var bike = Instantiate(BikePrefab);
 
         int r = rnd.Next(BikePaths.Count);
 
         GameObject path = BikePaths[r];
-        PathLayout movementPath = path.GetComponent<PathLayout>();
-        bike.GetComponent<Move>().Path = movementPath;
+        MovementPath movementPath = path.GetComponent<MovementPath>();
+        bike.GetComponent<Movement>().Path = movementPath;
         bike.transform.position = movementPath.PathSequence[0].position;
     }
 
     private void SpawnRandomMotorised()
     {
-        Debug.Log("Spawning motorised");
-
         var motorised = Instantiate(CarPrefab);
 
         int r = rnd.Next(CarPaths.Count);
 
         GameObject path = CarPaths[r];
-        PathLayout movementPath = path.GetComponent<PathLayout>();
-        motorised.GetComponent<Move>().Path = movementPath;
+        MovementPath movementPath = path.GetComponent<MovementPath>();
+        motorised.GetComponent<Movement>().Path = movementPath;
         motorised.transform.position = movementPath.PathSequence[0].position;
     }
 
     private void SpawnRandomTrain()
     {
-        Debug.Log("Spawning train");
-
         var train = Instantiate(TrainPrefab);
 
         int r = rnd.Next(TrainPaths.Count);
 
         GameObject path = TrainPaths[r];
-        PathLayout movementPath = path.GetComponent<PathLayout>();
-        train.GetComponent<Move>().Path = movementPath;
+        MovementPath movementPath = path.GetComponent<MovementPath>();
+        train.GetComponent<Movement>().Path = movementPath;
         train.transform.position = movementPath.PathSequence[0].position;
     }
 
     private void SpawnRandomVessel()
     {
-        Debug.Log("Spawning vessel");
-
         var vessel = Instantiate(BoatPrefab);
 
         int r = rnd.Next(BoatPaths.Count);
 
         GameObject path = BoatPaths[r];
-        PathLayout movementPath = path.GetComponent<PathLayout>();
-        vessel.GetComponent<Move>().Path = movementPath;
+        MovementPath movementPath = path.GetComponent<MovementPath>();
+        vessel.GetComponent<Movement>().Path = movementPath;
         vessel.transform.position = movementPath.PathSequence[0].position;
     }
 

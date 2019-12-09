@@ -9,14 +9,14 @@ public class TrafficLightManager : MonoBehaviour
 {
     #region Private variables
 
-    private List<TrafficLight> alternativeLights = new List<TrafficLight>{
-        new TrafficLight() { Name = "vessel/0/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "vessel/1/null/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "track/0/train_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "track/0/train_light/1", Status = TrafficLightStatus.Red }
+    private List<BoatTrainLight> alternativeLights = new List<BoatTrainLight>{
+        new BoatTrainLight() { Name = "vessel/0/boat_light/0", Status = BoatTrainLightStatus.Red },
+        new BoatTrainLight() { Name = "vessel/0/boat_light/1", Status = BoatTrainLightStatus.Red },
+        new BoatTrainLight() { Name = "track/0/train_light/0", Status = BoatTrainLightStatus.Red },
+        new BoatTrainLight() { Name = "track/0/train_light/1", Status = BoatTrainLightStatus.Red }
     };
 
-    private List<TrafficLight> trafficLights = new List<TrafficLight>(){ // Whoops hardcoded lights, gotta fix this some time
+    private List<TrafficLight> trafficLights = new List<TrafficLight>(){
         new TrafficLight() { Name = "motorised/0/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "motorised/1/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "motorised/2/traffic_light/0", Status = TrafficLightStatus.Red },
@@ -37,8 +37,6 @@ public class TrafficLightManager : MonoBehaviour
     };
 
     #endregion Private variables
-
-
 
     #region Singleton pattern
 
@@ -74,12 +72,23 @@ public class TrafficLightManager : MonoBehaviour
     /// <returns></returns>
     public TrafficLightStatus CheckLightStatus(string lightName)
     {
-        var allLights = trafficLights.Concat(alternativeLights).ToList();
-        TrafficLight light = allLights.Find(a => a.Name == lightName.ToLower());
+        TrafficLight light = trafficLights.Find(a => a.Name == lightName.ToLower());
 
         if (light != null)
         {
             return light.Status;
+        }
+        BoatTrainLight altLight = alternativeLights.Find(a => a.Name == lightName.ToLower());
+        if (altLight != null)
+        {
+            if(altLight.Status == BoatTrainLightStatus.Red)
+            {
+                return TrafficLightStatus.Red;
+            }
+            if(altLight.Status == BoatTrainLightStatus.Green)
+            {
+                return TrafficLightStatus.Green;
+            }
         }
         return TrafficLightStatus.Off;
     }
@@ -110,7 +119,7 @@ public class TrafficLightManager : MonoBehaviour
     /// </summary>
     /// <param name="lightName">Ex. cycle/0/traffic_light/0</param>
     /// <param name="status">Status of the light</param>
-    public void UpdateAlternativeLight(string lightName, TrafficLightStatus status)
+    public void UpdateAlternativeLight(string lightName, BoatTrainLightStatus status)
     {
         alternativeLights.Find(a => a.Name == lightName).Status = status;
         alternativeLights.Find(a => a.Name == lightName).UpdateRequired = true;
@@ -151,7 +160,7 @@ public class TrafficLightManager : MonoBehaviour
                 }
             }
         }
-        foreach (TrafficLight light in alternativeLights)
+        foreach (BoatTrainLight light in alternativeLights)
         {
             if (light.UpdateRequired)
             {
@@ -160,16 +169,12 @@ public class TrafficLightManager : MonoBehaviour
                 SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
                 switch (light.Status)
                 {
-                    case TrafficLightStatus.Green:
+                    case BoatTrainLightStatus.Green:
                         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/OtherGreen");
                         break;
 
-                    case TrafficLightStatus.Red:
+                    case BoatTrainLightStatus.Red:
                         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/OtherRed");
-                        break;
-
-                    case TrafficLightStatus.Off:
-                        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Lights/OtherOff");
                         break;
                 }
             }

@@ -11,16 +11,16 @@ public class MqttManager : MonoBehaviour
 {
     #region Public variables
 
-    public string brokerHostname = "arankieskamp.com";
-    public int teamId = 10;
+    public string BrokerHostname = "arankieskamp.com";
+    public int TeamId = 10;
 
     #endregion Public variables
 
     #region Private variables
 
-    private MqttClient client;
-    private TrafficLightManager trafficLightManager;
-    private SpecialObjectManager warningLightManager;
+    private MqttClient Client;
+    private TrafficLightManager TrafficLightManager;
+    private SpecialObjectManager WarningLightManager;
 
     #endregion Private variables
 
@@ -53,9 +53,9 @@ public class MqttManager : MonoBehaviour
 
     public void Publish(string _topic, string msg)
     {
-        string topic = teamId + "/" + _topic;
+        string topic = TeamId + "/" + _topic;
         //Debug.Log("Publishing message: \"" + msg + "\" to  \"" + topic);
-        client.Publish(
+        Client.Publish(
             topic, Encoding.UTF8.GetBytes(msg),
             MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
     }
@@ -72,15 +72,15 @@ public class MqttManager : MonoBehaviour
         string topic = e.Topic.Substring(e.Topic.IndexOf('/') + 1);
 
         // Check if its an update traffic statement
-        if (topic.IndexOf(ComponentType.TrafficLight) != -1 || topic.IndexOf(ComponentType.TrainLight) != -1)
+        if (topic.IndexOf(ComponentType.TrafficLight) != -1 || topic.IndexOf(ComponentType.TrainLight) != -1 || topic.IndexOf(ComponentType.BoatLight) != -1)
         {
             if (topic.IndexOf(LaneType.Motorised) != -1 || topic.IndexOf(LaneType.Cycle) != -1)
             {
-                trafficLightManager.UpdateLight(topic, (TrafficLightStatus)int.Parse(msg));
+                TrafficLightManager.UpdateLight(topic, (TrafficLightStatus)int.Parse(msg));
             }
             if (topic.IndexOf(LaneType.Vessel) != -1 || topic.IndexOf(LaneType.Track) != -1)
             {
-                trafficLightManager.UpdateAlternativeLight(topic, (TrafficLightStatus)int.Parse(msg));
+                TrafficLightManager.UpdateAlternativeLight(topic, (BoatTrainLightStatus)int.Parse(msg));
             }
         }
 
@@ -89,11 +89,11 @@ public class MqttManager : MonoBehaviour
         {
             if (topic.IndexOf(LaneType.Vessel) != -1)
             {
-                warningLightManager.UpdateWarningLight((WarningLightStatus)int.Parse(msg), LaneType.Vessel);
+                WarningLightManager.UpdateWarningLight((WarningLightStatus)int.Parse(msg), LaneType.Vessel);
             }
             if (topic.IndexOf(LaneType.Track) != -1)
             {
-                warningLightManager.UpdateWarningLight((WarningLightStatus)int.Parse(msg), LaneType.Track);
+                WarningLightManager.UpdateWarningLight((WarningLightStatus)int.Parse(msg), LaneType.Track);
             }
         }
 
@@ -102,28 +102,33 @@ public class MqttManager : MonoBehaviour
         {
             if (topic.IndexOf(LaneType.Vessel) != -1)
             {
-                warningLightManager.UpdateBarriers((BarrierStatus)int.Parse(msg), LaneType.Vessel);
+                WarningLightManager.UpdateBarriers((BarrierStatus)int.Parse(msg), LaneType.Vessel);
             }
             if (topic.IndexOf(LaneType.Track) != -1)
             {
-                warningLightManager.UpdateBarriers((BarrierStatus)int.Parse(msg), LaneType.Track);
+                WarningLightManager.UpdateBarriers((BarrierStatus)int.Parse(msg), LaneType.Track);
             }
         }
 
         if (topic.IndexOf(ComponentType.Deck) != -1)
         {
-            warningLightManager.UpdateDeck((DeckStatus)int.Parse(msg));
+            WarningLightManager.UpdateDeck((DeckStatus)int.Parse(msg));
         }
+    }
+
+    internal void SetDeckOccupied(bool v)
+    {
+        throw new NotImplementedException();
     }
 
     private void Connect()
     {
-        Debug.Log("About to connect on '" + brokerHostname + "'");
-        client = new MqttClient(brokerHostname);
+        Debug.Log("About to connect on '" + BrokerHostname + "'");
+        Client = new MqttClient(BrokerHostname);
         string clientId = "KevinsHerpesSimulatie";
         try
         {
-            client.Connect(clientId);
+            Client.Connect(clientId);
             Debug.Log("Success!");
         }
         catch (Exception e)
@@ -135,13 +140,13 @@ public class MqttManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        trafficLightManager = TrafficLightManager.Instance;
-        warningLightManager = SpecialObjectManager.Instance;
-        Debug.Log("Connecting to " + brokerHostname);
+        TrafficLightManager = TrafficLightManager.Instance;
+        WarningLightManager = SpecialObjectManager.Instance;
+        Debug.Log("Connecting to " + BrokerHostname);
         Connect();
-        client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+        Client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
         byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE };
-        client.Subscribe(new string[] { teamId + "/#" }, qosLevels);
+        Client.Subscribe(new string[] { TeamId + "/#" }, qosLevels);
     }
 
     // Update is called once per frame

@@ -151,11 +151,9 @@ public class Movement : MonoBehaviour
                 SensorType sensorType = SensorManager.GetSensorType(CurrentNode.name);
                 if (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Green && (sensorType == SensorType.FirstSensorNode || sensorType == SensorType.ThirdSensorNode))
                     return true;
-                if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode && !IsColliding() && sensorType != SensorType.WarningNode)
+                if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode && !IsColliding() && sensorType != SensorType.WarningNode && sensorType != SensorType.BarrierNode)
                     return true;
-                if (sensorType == SensorType.WarningNode && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
-                    return true;
-                if (sensorType == SensorType.BarrierNode && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
+                if ((sensorType == SensorType.WarningNode || sensorType == SensorType.BarrierNode) && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
                     return true;
                 return false;
             }
@@ -243,7 +241,7 @@ public class Movement : MonoBehaviour
                 Destroy(gameObject);
             }
 
-            if (CurrentSensorType != SensorType.NotASensor && CurrentSensorType != SensorType.WarningNode)
+            if (CurrentSensorType != SensorType.NotASensor && CurrentSensorType != SensorType.WarningNode && CurrentSensorType != SensorType.BarrierNode)
             {
                 PressCurrentSensor();
 
@@ -255,12 +253,7 @@ public class Movement : MonoBehaviour
                     return;
                 }
             }
-            if (CurrentSensorType == SensorType.WarningNode && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Flashing)
-            {
-                PauseMoving = true;
-                return;
-            }
-            if (CurrentSensorType == SensorType.BarrierNode && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Flashing)
+            else if ((CurrentSensorType == SensorType.WarningNode || CurrentSensorType == SensorType.BarrierNode) && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Flashing)
             {
                 PauseMoving = true;
                 return;

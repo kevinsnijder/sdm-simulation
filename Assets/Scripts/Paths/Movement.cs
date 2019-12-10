@@ -245,7 +245,14 @@ public class Movement : MonoBehaviour
             {
                 PressCurrentSensor();
 
-                if ((CurrentSensorType == SensorType.FirstSensorNode || CurrentSensorType == SensorType.ThirdSensorNode) &&
+                if (IsTrain)
+                {
+                    if (CurrentSensorType == SensorType.FirstSensorNode && TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Red) {
+                        PauseMoving = true;
+                        return;
+                    }
+                }
+                else if ((CurrentSensorType == SensorType.FirstSensorNode || CurrentSensorType == SensorType.ThirdSensorNode) &&
                     (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Red || TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Orange))
                 {
                     // Light is red

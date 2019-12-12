@@ -430,20 +430,20 @@ public class Movement : MonoBehaviour
             if (IsTrain && CurrentNode.parent.parent.name != "path0")
             {
                 if (CurrentSensorType == SensorType.FirstSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 1);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, SensorStatus.Activated);
                 else if (CurrentSensorType == SensorType.ThirdSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.FirstSensorNode, 1);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.FirstSensorNode, SensorStatus.Activated);
                 else if (CurrentSensorType == SensorType.SecondSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, 1);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, SensorStatus.Activated);
             }
             else if (IsBoat && CurrentNode.parent.parent.name != "path0")
             {
                 if (CurrentSensorType == SensorType.FirstSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 1);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, SensorStatus.Activated);
             }
             else
             {
-                SensorManager.UpdateSensor(currentPath, (int)CurrentSensorType, 1);
+                SensorManager.UpdateSensor(currentPath, (int)CurrentSensorType, SensorStatus.Activated);
             }
         }
         if (CurrentSensorType == SensorType.RemoveDeckNode)
@@ -470,20 +470,20 @@ public class Movement : MonoBehaviour
             if (IsTrain && Path.PathSequence[CurrentNodeId - 1].parent.parent.name != "path0")
             {
                 if (PreviousSensorType == SensorType.FirstSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 0);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, SensorStatus.Deactivated);
                 else if (PreviousSensorType == SensorType.ThirdSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.FirstSensorNode, 0);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.FirstSensorNode, SensorStatus.Deactivated);
                 else if (PreviousSensorType == SensorType.SecondSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, 0);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, SensorStatus.Deactivated);
             }
             else if (IsBoat && CurrentNode.parent.parent.name != "path0")
             {
                 if (CurrentSensorType == SensorType.FirstSensorNode)
-                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 0);
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, SensorStatus.Deactivated);
             }
             else
             {
-                SensorManager.UpdateSensor(currentPath, (int)PreviousSensorType, 0);
+                SensorManager.UpdateSensor(currentPath, (int)PreviousSensorType, SensorStatus.Deactivated);
             }
         }
         if (PreviousSensorType == SensorType.DeckBarrierNode)

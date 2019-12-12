@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Used to update sensors
@@ -8,6 +9,61 @@ public class SensorManager : MonoBehaviour
     #region Private variables
 
     private MqttManager mqttManager;
+
+    private List<Sensor> sensors = new List<Sensor>(){
+        new Sensor() { Name = "motorised/0/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/0/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/1/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/1/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/1/sensor/2", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/1/sensor/3", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/2/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/2/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/3/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/3/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/4/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/4/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/5/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/5/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/5/sensor/2", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/5/sensor/3", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/6/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/6/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/7/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/7/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/8/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "motorised/8/sensor/1", Status = SensorStatus.Deactivated },
+
+        new Sensor() { Name = "cycle/0/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "cycle/1/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "cycle/2/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "cycle/3/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "cycle/3/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "cycle/4/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "cycle/4/sensor/1", Status = SensorStatus.Deactivated },
+
+        new Sensor() { Name = "foot/0/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/1/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/2/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/3/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/4/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/5/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/6/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/0/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/1/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/2/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/3/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/4/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/5/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "foot/6/sensor/1", Status = SensorStatus.Deactivated },
+
+        new Sensor() { Name = "track/0/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "track/0/sensor/1", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "track/0/sensor/2", Status = SensorStatus.Deactivated },
+
+        new Sensor() { Name = "vessel/0/sensor/0", Status = SensorStatus.Deactivated },
+        new Sensor() { Name = "vessel/0/sensor/2", Status = SensorStatus.Deactivated },
+    };
 
     #endregion Private variables
 
@@ -88,11 +144,24 @@ public class SensorManager : MonoBehaviour
     /// Broadcasts that a sensor is pressed or unpressed
     /// </summary>
     /// <param name="pathName"></param>
-    /// <param name="sensor"></param>
+    /// <param name="sensor_id"></param>
     /// <param name="sensorstatus"></param>
-    public void UpdateSensor(string pathName, int sensor, int sensorstatus)
+    public void UpdateSensor(string pathName, int sensor_id, SensorStatus sensorStatus)
     {
-        mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor, sensorstatus.ToString());
+        var sensor = sensors.Find(a => a.Name == pathName.ToLower() + "/sensor/" + sensor_id);
+
+        if (sensor != null)
+        {
+            if (sensor.Status != sensorStatus)
+            {
+                sensor.Status = sensorStatus;
+                mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor_id, ((int) sensor.Status).ToString());
+            }
+        } 
+        else
+        {
+            mqttManager.Publish(pathName.ToLower() + "/sensor/" + sensor_id, ((int) sensorStatus).ToString());
+        }
     }
 
     #endregion Public methods

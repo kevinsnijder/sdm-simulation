@@ -12,7 +12,6 @@ public class Movement : MonoBehaviour
     public float CollisionDistance;
     public float MaxDistanceToGoal = .1f;
     public MovementPath Path;
-    public List<MovementPath> FootContinuePaths;
     public float RotationSpeedMultiplier = 7;
     public float Speed;
     public float MinFootSpeed;

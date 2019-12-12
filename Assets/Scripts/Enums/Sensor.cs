@@ -5,7 +5,10 @@
     ThirdSensorNode = 2,
     FourthSensorNode = 3,
     WarningNode = 4,
-    RemoveWarningNode = 5,
-    BarrierNode = 6,
+    RemoveDeckNode = 5,
+    DeckBarrierNode = 6,
+    UnderDeckNode = 7,
+    RemoveUnderDeckNode = 8,
+    TrackWarningNode = 9,
     NotASensor = 999,
 }

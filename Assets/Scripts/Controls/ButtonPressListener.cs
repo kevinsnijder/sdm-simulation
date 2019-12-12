@@ -29,7 +29,7 @@ public class ButtonPressListener : MonoBehaviour
                 MqttManager.Publish("vessel/0/barrier/0", "1");
                 MqttManager.Publish("track/0/barrier/0", "1");
 
-                MqttManager.Publish("track/0/deck/0", "1");
+                MqttManager.Publish("vessel/0/deck/0", "1");
             }
             else
             {
@@ -42,7 +42,7 @@ public class ButtonPressListener : MonoBehaviour
                 MqttManager.Publish("vessel/0/barrier/0", "0");
                 MqttManager.Publish("track/0/barrier/0", "0");
 
-                MqttManager.Publish("track/0/deck/0", "0");
+                MqttManager.Publish("vessel/0/deck/0", "0");
             }
             BackspacePressed = !BackspacePressed;
         }
@@ -100,9 +100,15 @@ public class ButtonPressListener : MonoBehaviour
             MqttManager.Publish("cycle/1/traffic_light/0", "2");
             MqttManager.Publish("cycle/2/traffic_light/0", "2");
             MqttManager.Publish("cycle/3/traffic_light/0", "2");
-            MqttManager.Publish("cycle/3/traffic_light/1", "2");
             MqttManager.Publish("cycle/4/traffic_light/0", "2");
-            MqttManager.Publish("cycle/4/traffic_light/1", "2");
+
+            MqttManager.Publish("foot/0/traffic_light/0", "2");
+            MqttManager.Publish("foot/1/traffic_light/0", "2");
+            MqttManager.Publish("foot/2/traffic_light/0", "2");
+            MqttManager.Publish("foot/3/traffic_light/0", "2");
+            MqttManager.Publish("foot/4/traffic_light/0", "2");
+            MqttManager.Publish("foot/5/traffic_light/0", "2");
+            MqttManager.Publish("foot/6/traffic_light/0", "2");
         }
         if (Input.GetKeyDown(KeyCode.Comma))
         {

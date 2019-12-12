@@ -74,7 +74,7 @@ public class SpecialObjectManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds a boat to the total boat count underneeth the deck
+    /// Adds a boat to the total boat count underneath the deck
     /// </summary>
     public void AddBoatUnderneathDeck()
     {
@@ -87,7 +87,7 @@ public class SpecialObjectManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Removes a boat from the total boat count underneeth the deck
+    /// Removes a boat from the total boat count underneath the deck
     /// </summary>
     public void RemoveBoatUnderneathDeck()
     {

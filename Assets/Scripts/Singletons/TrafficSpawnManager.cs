@@ -18,6 +18,9 @@ public class TrafficSpawnManager : MonoBehaviour
     public GameObject CarPrefab;
     public List<GameObject> TrainPaths;
     public GameObject TrainPrefab;
+    public List<GameObject> FootSpawnPaths;
+    public List<GameObject> FootRespawnPaths;
+    public GameObject FootPrefab;
 
     #endregion Public variables
 
@@ -58,61 +61,38 @@ public class TrafficSpawnManager : MonoBehaviour
 
     public void SpawnRandom()
     {
-        int r = rnd.Next(21);
+        int r = rnd.Next(31);
 
-        switch (r)
+        if (r < 15)
+            SpawnRandomMotorised();
+        else if (r > 14 && r < 23)
+            SpawnRandomCycle();
+        else if (r > 22 && r < 28)
+            SpawnRandomFoot();
+        else if (r > 27 && r < 30)
+            SpawnRandomVessel();
+        else if (!TrainHasSpawned)
         {
-            // Motorised
-            //TODO: Dit vieze spul opruimen
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 12:
-            case 13:
-            case 14:
-            case 8:
-            case 9:
-            case 10:
-                SpawnRandomMotorised();
-                break;
-
-            // Vessel
-            case 20:
-                SpawnRandomVessel();
-                break;
-
-            // Track
-            case 11:
-                if (!TrainHasSpawned)
-                {
-                    TrainHasSpawned = true;
-                    SpawnRandomTrain();
-                }
-                break;
-
-            // Cycle
-            case 15:
-            case 16:
-            case 17:
-            case 18:
-            case 19:
-                SpawnRandomCycle();
-                break;
-
-                // Foot
-                //case :
-                //    break;
+            TrainHasSpawned = true;
+            SpawnRandomTrain();
         }
     }
 
     #endregion Public methods
 
     #region Private methods
+    private float GetRandomSpeed(float min, float max)
+    {
+        var temp = rnd.Next(0, 2);
+        if (temp == 0)
+            return min;
+        if (temp == 1)
+            return min + ((max - min) / 2);
+        if (temp == 2)
+            return max;
+        else
+            return max;
+    }
 
     private void SpawnRandomCycle()
     {
@@ -122,8 +102,10 @@ public class TrafficSpawnManager : MonoBehaviour
 
         GameObject path = BikePaths[r];
         MovementPath movementPath = path.GetComponent<MovementPath>();
-        bike.GetComponent<Movement>().Path = movementPath;
+        var bikeMovement = bike.GetComponent<Movement>();
+        bikeMovement.Path = movementPath;
         bike.transform.position = movementPath.PathSequence[0].position;
+        bikeMovement.Speed = GetRandomSpeed(bikeMovement.MinCycleSpeed, bikeMovement.MaxCycleSpeed);
     }
 
     private void SpawnRandomMotorised()
@@ -136,6 +118,20 @@ public class TrafficSpawnManager : MonoBehaviour
         MovementPath movementPath = path.GetComponent<MovementPath>();
         motorised.GetComponent<Movement>().Path = movementPath;
         motorised.transform.position = movementPath.PathSequence[0].position;
+    }
+
+    private void SpawnRandomFoot()
+    {
+        var foot = Instantiate(FootPrefab);
+
+        int r = rnd.Next(FootSpawnPaths.Count);
+
+        GameObject path = FootSpawnPaths[r];
+        MovementPath movementPath = path.GetComponent<MovementPath>();
+        var footMovement = foot.GetComponent<Movement>();
+        footMovement.Path = movementPath;
+        foot.transform.position = movementPath.PathSequence[0].position;
+        footMovement.Speed = GetRandomSpeed(footMovement.MinFootSpeed, footMovement.MaxFootSpeed);
     }
 
     private void SpawnRandomTrain()

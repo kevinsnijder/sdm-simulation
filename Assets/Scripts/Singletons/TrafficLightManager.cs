@@ -33,7 +33,23 @@ public class TrafficLightManager : MonoBehaviour
         new TrafficLight() { Name = "cycle/3/traffic_light/0", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "cycle/3/traffic_light/1", Status = TrafficLightStatus.Red },
         new TrafficLight() { Name = "cycle/4/traffic_light/0", Status = TrafficLightStatus.Red },
-        new TrafficLight() { Name = "cycle/4/traffic_light/1", Status = TrafficLightStatus.Red }
+        new TrafficLight() { Name = "cycle/4/traffic_light/1", Status = TrafficLightStatus.Red },
+
+        new TrafficLight() { Name = "foot/0/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/1/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/2/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/3/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/4/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/5/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/6/traffic_light/0", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/0/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/1/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/2/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/3/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/4/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/5/traffic_light/1", Status = TrafficLightStatus.Red },
+        new TrafficLight() { Name = "foot/6/traffic_light/1", Status = TrafficLightStatus.Red },
+
     };
 
     #endregion Private variables
@@ -105,14 +121,15 @@ public class TrafficLightManager : MonoBehaviour
 
         if (lightName.Contains("cycle/3") || lightName.Contains("cycle/4"))
         {
-            trafficLights.Find(a => a.Name == lightName.Replace('0', '1')).Status = status;
-            trafficLights.Find(a => a.Name == lightName.Replace('0', '1')).UpdateRequired = true;
+            trafficLights.Find(a => a.Name == ReplaceLastOccurence(lightName, "0", "1")).Status = status;
+            trafficLights.Find(a => a.Name == ReplaceLastOccurence(lightName, "0", "1")).UpdateRequired = true;
+        }
+        if (lightName.Contains("foot"))
+        {
+            trafficLights.Find(a => a.Name == ReplaceLastOccurence(lightName, "0", "1")).Status = status;
+            trafficLights.Find(a => a.Name == ReplaceLastOccurence(lightName, "0", "1")).UpdateRequired = true;
         }
     }
-
-    #endregion Public methods
-
-    #region Private methods
 
     /// <summary>
     /// Updates a light with 2 statuses to the preferred status
@@ -123,6 +140,28 @@ public class TrafficLightManager : MonoBehaviour
     {
         alternativeLights.Find(a => a.Name == lightName).Status = status;
         alternativeLights.Find(a => a.Name == lightName).UpdateRequired = true;
+    }
+
+    #endregion Public methods
+
+    #region Private methods
+
+    /// <summary>
+    /// Function for replacing last occurence of something in a string
+    /// </summary>
+    /// <param name="source">The orignal string</param>
+    /// <param name="find">The part to replace</param>
+    /// <param name="replace">What to replace with</param>
+    /// <returns></returns>
+    private static string ReplaceLastOccurence(string source, string find, string replace)
+    {
+        int place = source.LastIndexOf(find);
+
+        if (place == -1)
+            return source;
+
+        string result = source.Remove(place, find.Length).Insert(place, replace);
+        return result;
     }
 
     // Start is called before the first frame update

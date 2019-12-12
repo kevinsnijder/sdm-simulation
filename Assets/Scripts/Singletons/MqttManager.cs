@@ -74,7 +74,7 @@ public class MqttManager : MonoBehaviour
         // Check if its an update traffic statement
         if (topic.IndexOf(ComponentType.TrafficLight) != -1 || topic.IndexOf(ComponentType.TrainLight) != -1 || topic.IndexOf(ComponentType.BoatLight) != -1)
         {
-            if (topic.IndexOf(LaneType.Motorised) != -1 || topic.IndexOf(LaneType.Cycle) != -1)
+            if (topic.IndexOf(LaneType.Motorised) != -1 || topic.IndexOf(LaneType.Cycle) != -1 || topic.IndexOf(LaneType.Foot) != -1)
             {
                 TrafficLightManager.UpdateLight(topic, (TrafficLightStatus)int.Parse(msg));
             }

@@ -12,8 +12,13 @@ public class Movement : MonoBehaviour
     public float CollisionDistance;
     public float MaxDistanceToGoal = .1f;
     public MovementPath Path;
+    public List<MovementPath> FootContinuePaths;
     public float RotationSpeedMultiplier = 7;
     public float Speed;
+    public float MinFootSpeed;
+    public float MaxFootSpeed;
+    public float MinCycleSpeed;
+    public float MaxCycleSpeed;
 
     #endregion Public variables
 
@@ -28,6 +33,8 @@ public class Movement : MonoBehaviour
     private SensorManager SensorManager;
     private TrafficLightManager TrafficLightManager;
     private SpecialObjectManager SpecialObjectManager;
+    private TrafficSpawnManager TrafficSpawnManager;
+    private System.Random rnd = new System.Random();
 
     #endregion Private variables
 
@@ -149,13 +156,47 @@ public class Movement : MonoBehaviour
             if (PauseMoving)
             {
                 SensorType sensorType = SensorManager.GetSensorType(CurrentNode.name);
-                if (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Green && (sensorType == SensorType.FirstSensorNode || sensorType == SensorType.ThirdSensorNode))
-                    return true;
-                if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode && !IsColliding() && sensorType != SensorType.WarningNode && sensorType != SensorType.BarrierNode)
-                    return true;
-                if ((sensorType == SensorType.WarningNode || sensorType == SensorType.BarrierNode) && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
-                    return true;
-                return false;
+                if (IsFoot || IsBike)
+                {
+                    if (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Green &&
+                        (sensorType == SensorType.FirstSensorNode || sensorType == SensorType.SecondSensorNode))
+                        return true;
+                    if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.SecondSensorNode &&
+                        !IsColliding() && sensorType != SensorType.TrackWarningNode &&
+                        sensorType != SensorType.DeckBarrierNode)
+                        return true;
+                    if (sensorType == SensorType.TrackWarningNode &&
+                        SpecialObjectManager.CheckLightStatus("track/0/warning_light/0") == WarningLightStatus.Off)
+                        return true;
+                    if (sensorType == SensorType.DeckBarrierNode &&
+                        SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
+                        return true;
+                    return false;
+                }
+                else if (IsBoat || IsBoat)
+                {
+                    if (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Green &&
+                        (sensorType == SensorType.FirstSensorNode || sensorType == SensorType.ThirdSensorNode))
+                        return true;
+                    if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode &&
+                        !IsColliding())
+                        return true;
+                    return false;
+                }
+                else
+                {
+                    if (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Green && 
+                        (sensorType == SensorType.FirstSensorNode || sensorType == SensorType.ThirdSensorNode))
+                        return true;
+                    if (sensorType != SensorType.FirstSensorNode && sensorType != SensorType.ThirdSensorNode && 
+                        !IsColliding() && sensorType != SensorType.WarningNode && 
+                        sensorType != SensorType.DeckBarrierNode)
+                        return true;
+                    if ((sensorType == SensorType.WarningNode || sensorType == SensorType.DeckBarrierNode) && 
+                        SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Off)
+                        return true;
+                    return false;
+                }
             }
             return true;
         }
@@ -176,7 +217,7 @@ public class Movement : MonoBehaviour
         string lightName = currentNode.parent.parent.parent.parent.name + "/" + PathName + "/traffic_light/0";
 
         // Override lightname when this object is a bike or a train
-        if (IsBike)
+        if (IsBike || IsFoot)
         {
             if (currentNode.parent.parent.name == "path0")
                 lightName = currentNode.parent.parent.parent.parent.name + "/" + PathName + "/traffic_light/0";
@@ -212,7 +253,9 @@ public class Movement : MonoBehaviour
 
         string objectName = gameObject.name.ToLower();
         if (IsBike || IsFoot)
-            hits.RemoveAll(x => x.collider.gameObject.GetComponent<Movement>().Path != Path);
+            //hits.RemoveAll(x => x.collider.gameObject.GetComponent<Movement>().Path != Path);
+            hits.RemoveAll(x => x.collider.gameObject.GetComponent<Movement>().Path);
+
 
         if (hits.Count > 1)
             return true;
@@ -236,31 +279,65 @@ public class Movement : MonoBehaviour
             if (Path.PathSequence.Length - 1 == CurrentNodeId)
             {
                 if (IsTrain)
-                    TrafficSpawnManager.Instance.TrainHasSpawned = false;
-
-                Destroy(gameObject);
+                    TrafficSpawnManager.TrainHasSpawned = false;
+                if (IsFoot)
+                {
+                    RespawnFoot();
+                    return;
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             }
-
-            if (CurrentSensorType != SensorType.NotASensor && CurrentSensorType != SensorType.WarningNode && CurrentSensorType != SensorType.BarrierNode)
+            if (CurrentSensorType != SensorType.WarningNode && 
+                CurrentSensorType != SensorType.DeckBarrierNode && 
+                CurrentSensorType != SensorType.TrackWarningNode)
             {
                 PressCurrentSensor();
 
-                if (IsTrain)
+                if (IsTrain || IsBoat)
                 {
-                    if (CurrentSensorType == SensorType.FirstSensorNode && TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Red) {
+                    if (CurrentSensorType == SensorType.FirstSensorNode 
+                        && TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Red) {
                         PauseMoving = true;
                         return;
                     }
                 }
-                else if ((CurrentSensorType == SensorType.FirstSensorNode || CurrentSensorType == SensorType.ThirdSensorNode) &&
-                    (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Red || TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Orange))
+                else if ((IsFoot || IsBike) && 
+                    (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Red || 
+                    TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Orange))
                 {
-                    // Light is red
+                    Transform currentNode = Path.PathSequence[CurrentNodeId];
+
+                    if (currentNode.parent.parent.name == "path0" && CurrentSensorType == SensorType.FirstSensorNode)
+                    {
+                        PauseMoving = true;
+                        return;
+                    }
+                    else if (currentNode.parent.parent.name == "path1" && CurrentSensorType == SensorType.SecondSensorNode)
+                    {
+                        PauseMoving = true;
+                        return;
+                    }
+                }
+                else if ((CurrentSensorType == SensorType.FirstSensorNode || 
+                    CurrentSensorType == SensorType.ThirdSensorNode) &&
+                    (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Red || 
+                    TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Orange))
+                {
                     PauseMoving = true;
                     return;
                 }
             }
-            else if ((CurrentSensorType == SensorType.WarningNode || CurrentSensorType == SensorType.BarrierNode) && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Flashing)
+            else if ((CurrentSensorType == SensorType.WarningNode || CurrentSensorType == SensorType.DeckBarrierNode) 
+                && SpecialObjectManager.CheckLightStatus("vessel/0/warning_light/0") == WarningLightStatus.Flashing)
+            {
+                PauseMoving = true;
+                return;
+            }
+            else if (CurrentSensorType == SensorType.TrackWarningNode 
+                && SpecialObjectManager.CheckLightStatus("track/0/warning_light/0") == WarningLightStatus.Flashing)
             {
                 PauseMoving = true;
                 return;
@@ -276,33 +353,148 @@ public class Movement : MonoBehaviour
     }
 
     /// <summary>
+    /// This function first checks if a Foot instance is at the end of a group that continues into another group
+    /// If so it resets the path variables to the ones of the continueing group
+    /// </summary>
+    private void RespawnFoot()
+    {
+        // If previous to last node was a sensor, respawn this foot in the connecting group
+        if (PreviousSensorType == SensorType.FirstSensorNode || PreviousSensorType == SensorType.SecondSensorNode)
+        {
+            Transform currentNode = Path.PathSequence[CurrentNodeId];
+
+            if (currentNode.parent.parent.name == "path0")
+            {
+                // Group 0 pad 0
+                if (PathName.Equals("0"))
+                {
+                    // Group 1 pad 1
+                    Path = TrafficSpawnManager.FootRespawnPaths[1].GetComponent<MovementPath>();
+                }
+                // Group 1 pad 0
+                else if (PathName.Equals("1"))
+                {
+                    // Group 0 pad 1
+                    Path = TrafficSpawnManager.FootRespawnPaths[0].GetComponent<MovementPath>();
+                }
+                // Group 3 pad 0
+                else if (PathName.Equals("3"))
+                {
+                    // Group 4 pad 0
+                    Path = TrafficSpawnManager.FootRespawnPaths[3].GetComponent<MovementPath>();
+                }
+                // Group 4 pad 0
+                else if (PathName.Equals("4"))
+                {
+                    // Group 5 pad 1
+                    Path = TrafficSpawnManager.FootRespawnPaths[5].GetComponent<MovementPath>();
+                }
+                // Group 5 pad 0
+                else if (PathName.Equals("5"))
+                {
+                    // Group 4 pad 1
+                    Path = TrafficSpawnManager.FootRespawnPaths[4].GetComponent<MovementPath>();
+                }
+            }
+            else
+            {
+                // Group 4 pad 1
+                if (PathName.Equals("4"))
+                {
+                    // Group 3 pad 1
+                    Path = TrafficSpawnManager.FootRespawnPaths[2].GetComponent<MovementPath>();
+                }
+            }
+            transform.position = Path.PathSequence[0].position;
+            PathName = Path.PathSequence[0].parent.parent.parent.name;
+            CurrentNodeId = 0;
+            LightName = GetCurrentTrafficlight();
+        } 
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
     /// Indicates that the current sensor is pressed if the current node is actually a sensor
     /// </summary>
     private void PressCurrentSensor()
     {
-        string trackName = CurrentNode.parent.parent.parent.parent.name + "/" + PathName;
-        if (CurrentSensorType != SensorType.WarningNode && CurrentSensorType != SensorType.NotASensor && CurrentSensorType != SensorType.RemoveWarningNode && CurrentSensorType != SensorType.BarrierNode)
+        string currentPath = CurrentNode.parent.parent.parent.parent.name + "/" + PathName;
+        if (CurrentSensorType == SensorType.FirstSensorNode || 
+            CurrentSensorType == SensorType.SecondSensorNode || 
+            CurrentSensorType == SensorType.ThirdSensorNode || 
+            CurrentSensorType == SensorType.FourthSensorNode)
         {
-            if ((IsTrain || IsBoat) && CurrentNode.parent.parent.name != "path0")
+            if (IsTrain && CurrentNode.parent.parent.name != "path0")
             {
-                if (CurrentNode.name.ToLower().Contains("sensor0"))
-                    SensorManager.UpdateSensor(trackName, (int)SensorType.ThirdSensorNode, 1);
-                else if (CurrentNode.name.ToLower().Contains("sensor2"))
-                    SensorManager.UpdateSensor(trackName, (int)SensorType.FirstSensorNode, 1);
-                else if (CurrentNode.name.ToLower().Contains("sensor1"))
-                    SensorManager.UpdateSensor(trackName, (int)SensorType.SecondSensorNode, 1);
+                if (CurrentSensorType == SensorType.FirstSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 1);
+                else if (CurrentSensorType == SensorType.ThirdSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.FirstSensorNode, 1);
+                else if (CurrentSensorType == SensorType.SecondSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, 1);
+            }
+            else if (IsBoat && CurrentNode.parent.parent.name != "path0")
+            {
+                if (CurrentSensorType == SensorType.FirstSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 1);
             }
             else
             {
-                SensorManager.UpdateSensor(trackName, (int)CurrentSensorType, 1);
+                SensorManager.UpdateSensor(currentPath, (int)CurrentSensorType, 1);
             }
         }
-        if (CurrentSensorType == SensorType.RemoveWarningNode)
+        if (CurrentSensorType == SensorType.RemoveDeckNode)
         {
-            if (IsBoat)
-                SpecialObjectManager.RemoveBoatUnderneathDeck();
+            SpecialObjectManager.RemoveVehicleFromDeck();
+        }
+        if (CurrentSensorType == SensorType.RemoveUnderDeckNode)
+        {
+            SpecialObjectManager.RemoveBoatUnderneathDeck();
+        }
+    }
+
+    /// <summary>
+    /// Indicates that the current sensor is no longer pressed if the current node is actually a sensor
+    /// </summary>
+    private void UnPressPreviousSensor()
+    {
+        if (PreviousSensorType == SensorType.FirstSensorNode ||
+            PreviousSensorType == SensorType.SecondSensorNode ||
+            PreviousSensorType == SensorType.ThirdSensorNode ||
+            PreviousSensorType == SensorType.FourthSensorNode)
+        {
+            string currentPath = CurrentNode.parent.parent.parent.parent.name + "/" + PathName;
+            if (IsTrain && Path.PathSequence[CurrentNodeId - 1].parent.parent.name != "path0")
+            {
+                if (PreviousSensorType == SensorType.FirstSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 0);
+                else if (PreviousSensorType == SensorType.ThirdSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.FirstSensorNode, 0);
+                else if (PreviousSensorType == SensorType.SecondSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, 0);
+            }
+            else if (IsBoat && CurrentNode.parent.parent.name != "path0")
+            {
+                if (CurrentSensorType == SensorType.FirstSensorNode)
+                    SensorManager.UpdateSensor(currentPath, (int)SensorType.ThirdSensorNode, 0);
+            }
             else
-                SpecialObjectManager.RemoveVehicleFromDeck();
+            {
+                SensorManager.UpdateSensor(currentPath, (int)PreviousSensorType, 0);
+            }
+        }
+        if (PreviousSensorType == SensorType.DeckBarrierNode)
+        {
+            //Pressed the deck sensor
+            SpecialObjectManager.AddVehicleToDeck();
+        }
+        if (IsBoat && PreviousSensorType == SensorType.UnderDeckNode)
+        {
+            //Pressed underneath deck sensor
+            SpecialObjectManager.AddBoatUnderneathDeck();
         }
     }
 
@@ -325,6 +517,7 @@ public class Movement : MonoBehaviour
         SensorManager = SensorManager.Instance;
         TrafficLightManager = TrafficLightManager.Instance;
         SpecialObjectManager = SpecialObjectManager.Instance;
+        TrafficSpawnManager = TrafficSpawnManager.Instance;
         PathName = Path.PathSequence[0].parent.parent.parent.name;
         LightName = GetCurrentTrafficlight();
 
@@ -333,40 +526,6 @@ public class Movement : MonoBehaviour
         {
             Debug.LogError("Movement Path cannot be null, I must have a path to follow.", gameObject);
             return;
-        }
-    }
-
-    /// <summary>
-    /// Indicates that the current sensor is no longer pressed if the current node is actually a sensor
-    /// </summary>
-    private void UnPressPreviousSensor()
-    {
-        if (PreviousSensorType != SensorType.WarningNode && PreviousSensorType != SensorType.NotASensor && PreviousSensorType != SensorType.RemoveWarningNode && PreviousSensorType != SensorType.BarrierNode)
-        {
-            string trackName = CurrentNode.parent.parent.parent.parent.name + "/" + PathName;
-            if ((IsTrain || IsBoat) && Path.PathSequence[CurrentNodeId - 1].parent.parent.name != "path0")
-            {
-                if (Path.PathSequence[CurrentNodeId - 1].name.ToLower().Contains("sensor0"))
-                    SensorManager.UpdateSensor(trackName, (int)SensorType.ThirdSensorNode, 0);
-                else if (Path.PathSequence[CurrentNodeId - 1].name.ToLower().Contains("sensor2"))
-                    SensorManager.UpdateSensor(trackName, (int)SensorType.FirstSensorNode, 0);
-                else if (Path.PathSequence[CurrentNodeId - 1].name.ToLower().Contains("sensor1"))
-                    SensorManager.UpdateSensor(trackName, (int)SensorType.SecondSensorNode, 0);
-            }
-            else
-            {
-                SensorManager.UpdateSensor(trackName, (int)PreviousSensorType, 0);
-            }
-        }
-        if (PreviousSensorType == SensorType.BarrierNode)
-        {
-            //Press the deck sensor
-            SpecialObjectManager.AddVehicleToDeck();
-        }
-        if (IsBoat && PreviousSensorType == SensorType.FirstSensorNode)
-        {
-            //Press underneeth deck sensor
-            SpecialObjectManager.AddBoatUnderneathDeck();
         }
     }
 

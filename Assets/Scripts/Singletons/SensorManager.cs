@@ -64,11 +64,20 @@ public class SensorManager : MonoBehaviour
             case "nodewarning":
                 return SensorType.WarningNode;
 
-            case "noderemovewarning":
-                return SensorType.RemoveWarningNode;
+            case "nodedeck":
+                return SensorType.DeckBarrierNode;
 
-            case "nodebarrier":
-                return SensorType.BarrierNode;
+            case "noderemovedeck":
+                return SensorType.RemoveDeckNode;
+
+            case "nodeunderdeck":
+                return SensorType.UnderDeckNode;
+
+            case "noderemoveunderdeck":
+                return SensorType.RemoveUnderDeckNode;
+
+            case "nodetrackwarning":
+                return SensorType.TrackWarningNode;
 
             default:
                 return SensorType.NotASensor;

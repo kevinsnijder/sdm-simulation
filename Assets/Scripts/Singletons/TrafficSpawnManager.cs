@@ -67,9 +67,9 @@ public class TrafficSpawnManager : MonoBehaviour
             SpawnRandomMotorised();
         else if (r > 14 && r < 23)
             SpawnRandomCycle();
-        else if (r > 22 && r < 28)
+        else if (r > 22 && r < 29)
             SpawnRandomFoot();
-        else if (r > 27 && r < 30)
+        else if (r > 28 && r < 30)
             SpawnRandomVessel();
         else if (!TrainHasSpawned)
         {

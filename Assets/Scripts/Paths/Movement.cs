@@ -100,7 +100,7 @@ public class Movement : MonoBehaviour
     {
         get
         {
-            if (this.gameObject.name.ToLower().Contains("boat"))
+            if (this.gameObject.tag == "Boat")
                 return true;
             return false;
         }
@@ -113,7 +113,7 @@ public class Movement : MonoBehaviour
     {
         get
         {
-            if (this.gameObject.name.ToLower().Contains("train"))
+            if (this.gameObject.tag == "Train")
                 return true;
             return false;
         }
@@ -126,7 +126,7 @@ public class Movement : MonoBehaviour
     {
         get
         {
-            if (this.gameObject.name.ToLower().Contains("bike"))
+            if (this.gameObject.tag == "Bike")
                 return true;
             return false;
         }
@@ -139,7 +139,7 @@ public class Movement : MonoBehaviour
     {
         get
         {
-            if (this.gameObject.name.ToLower().Contains("foot"))
+            if (this.gameObject.tag == "Foot")
                 return true;
             return false;
         }

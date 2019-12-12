@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6106058633455453020}
   m_Layer: 0
   m_Name: Bike
-  m_TagString: Untagged
+  m_TagString: Bike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,7 +122,6 @@ MonoBehaviour:
   CollisionDistance: 0.1
   MaxDistanceToGoal: 0.1
   Path: {fileID: 0}
-  FootContinuePaths: []
   RotationSpeedMultiplier: 7
   Speed: 0
   MinFootSpeed: 0

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 114827066670766220}
   m_Layer: 0
   m_Name: Boat
-  m_TagString: Untagged
+  m_TagString: Boat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,3 +124,7 @@ MonoBehaviour:
   Path: {fileID: 0}
   RotationSpeedMultiplier: 7
   Speed: 1
+  MinFootSpeed: 0
+  MaxFootSpeed: 0
+  MinCycleSpeed: 0
+  MaxCycleSpeed: 0

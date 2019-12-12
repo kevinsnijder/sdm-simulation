@@ -172,7 +172,7 @@ public class Movement : MonoBehaviour
                         return true;
                     return false;
                 }
-                else if (IsBoat || IsBoat)
+                else if (IsBoat || IsTrain)
                 {
                     if (TrafficLightManager.CheckLightStatus(LightName) == TrafficLightStatus.Green &&
                         (sensorType == SensorType.FirstSensorNode || sensorType == SensorType.ThirdSensorNode))

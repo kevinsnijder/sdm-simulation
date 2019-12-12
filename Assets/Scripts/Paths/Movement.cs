@@ -291,7 +291,8 @@ public class Movement : MonoBehaviour
             }
             if (CurrentSensorType != SensorType.WarningNode && 
                 CurrentSensorType != SensorType.DeckBarrierNode && 
-                CurrentSensorType != SensorType.TrackWarningNode)
+                CurrentSensorType != SensorType.TrackWarningNode &&
+                CurrentSensorType != SensorType.NotASensor)
             {
                 PressCurrentSensor();
 

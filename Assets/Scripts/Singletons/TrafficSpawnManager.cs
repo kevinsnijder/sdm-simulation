@@ -21,6 +21,8 @@ public class TrafficSpawnManager : MonoBehaviour
     public List<GameObject> FootSpawnPaths;
     public List<GameObject> FootRespawnPaths;
     public GameObject FootPrefab;
+    public double VesselSpawnDistance;
+    public double CarSpawnDistance;
 
     #endregion Public variables
 
@@ -110,12 +112,20 @@ public class TrafficSpawnManager : MonoBehaviour
 
     private void SpawnRandomMotorised()
     {
-        var motorised = Instantiate(CarPrefab);
-
         int r = rnd.Next(CarPaths.Count);
 
         GameObject path = CarPaths[r];
         MovementPath movementPath = path.GetComponent<MovementPath>();
+
+        GameObject[] allCars = GameObject.FindGameObjectsWithTag("Car");
+        foreach (GameObject current in allCars)
+        {
+            var distanceSquared = (current.transform.position - movementPath.PathSequence[0].position).sqrMagnitude;
+
+            if (distanceSquared < CarSpawnDistance * CarSpawnDistance)
+                return;
+        }
+        var motorised = Instantiate(CarPrefab);
         motorised.GetComponent<Movement>().Path = movementPath;
         motorised.transform.position = movementPath.PathSequence[0].position;
     }
@@ -148,12 +158,20 @@ public class TrafficSpawnManager : MonoBehaviour
 
     private void SpawnRandomVessel()
     {
-        var vessel = Instantiate(BoatPrefab);
-
         int r = rnd.Next(BoatPaths.Count);
 
         GameObject path = BoatPaths[r];
         MovementPath movementPath = path.GetComponent<MovementPath>();
+
+        GameObject[] allBoats = GameObject.FindGameObjectsWithTag("Boat");
+        foreach (GameObject current in allBoats)
+        {
+            var distanceSquared = (current.transform.position - movementPath.PathSequence[0].position).sqrMagnitude;
+
+            if (distanceSquared < VesselSpawnDistance * VesselSpawnDistance)
+                return;
+        }
+        var vessel = Instantiate(BoatPrefab);
         vessel.GetComponent<Movement>().Path = movementPath;
         vessel.transform.position = movementPath.PathSequence[0].position;
     }

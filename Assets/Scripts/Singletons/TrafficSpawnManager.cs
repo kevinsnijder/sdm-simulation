@@ -63,15 +63,15 @@ public class TrafficSpawnManager : MonoBehaviour
 
     public void SpawnRandom()
     {
-        int r = rnd.Next(31);
+        int r = rnd.Next(51);
 
-        if (r < 15)
+        if (r < 25)
             SpawnRandomMotorised();
-        else if (r > 14 && r < 23)
+        else if (r > 25 && r < 40)
             SpawnRandomCycle();
-        else if (r > 22 && r < 29)
+        else if (r > 40 && r < 47)
             SpawnRandomFoot();
-        else if (r > 28 && r < 30)
+        else if (r > 47 && r < 50)
             SpawnRandomVessel();
         else if (!TrainHasSpawned)
         {

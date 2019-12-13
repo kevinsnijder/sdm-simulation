@@ -63,20 +63,28 @@ public class TrafficSpawnManager : MonoBehaviour
 
     public void SpawnRandom()
     {
-        int r = rnd.Next(51);
+        int r = rnd.Next(100);
 
-        if (r < 25)
+        // 44% chance of spawning car
+        if (r < 44)
             SpawnRandomMotorised();
-        else if (r > 25 && r < 40)
+        // 34% chance of spawning cylce
+        else if (r > 43 && r < 78)
             SpawnRandomCycle();
-        else if (r > 40 && r < 47)
+        // 16% chance of spawning foot
+        else if (r > 77 && r < 96)
             SpawnRandomFoot();
-        else if (r > 47 && r < 50)
+        // 3% chance of spawning vessel
+        else if (r > 95 && r < 99)
             SpawnRandomVessel();
-        else if (!TrainHasSpawned)
+        // 2% chance of spawning train
+        else if (r > 98) 
         {
-            TrainHasSpawned = true;
-            SpawnRandomTrain();
+            if (!TrainHasSpawned)
+            {
+                TrainHasSpawned = true;
+                SpawnRandomTrain();
+            }
         }
     }
 

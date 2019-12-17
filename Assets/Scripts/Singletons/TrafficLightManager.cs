@@ -169,7 +169,9 @@ public class TrafficLightManager : MonoBehaviour
     {
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame and is used to update light sprites
+    /// </summary>
     private void Update()
     {
         foreach (TrafficLight light in trafficLights)

@@ -116,16 +116,11 @@ public class MqttManager : MonoBehaviour
         }
     }
 
-    internal void SetDeckOccupied(bool v)
-    {
-        throw new NotImplementedException();
-    }
-
     private void Connect()
     {
         Debug.Log("About to connect on '" + BrokerHostname + "'");
         Client = new MqttClient(BrokerHostname);
-        string clientId = "KevinsHerpesSimulatie";
+        string clientId = "team-10-simulation";
         try
         {
             Client.Connect(clientId);

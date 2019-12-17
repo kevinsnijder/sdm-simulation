@@ -16,6 +16,7 @@ public class ButtonPressListener : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        // Used for testing only
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (!BackspacePressed)

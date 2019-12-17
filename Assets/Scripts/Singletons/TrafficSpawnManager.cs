@@ -61,6 +61,9 @@ public class TrafficSpawnManager : MonoBehaviour
 
     #region Public methods
 
+    /// <summary>
+    /// Spawn random type of vehicle based on a random number picker
+    /// </summary>
     public void SpawnRandom()
     {
         int r = rnd.Next(100);
@@ -91,6 +94,13 @@ public class TrafficSpawnManager : MonoBehaviour
     #endregion Public methods
 
     #region Private methods
+
+    /// <summary>
+    /// Choose a random speed for a cycle or foot instance
+    /// </summary>
+    /// <param name="min">Minimum speed</param>
+    /// <param name="max">Maximum speed</param>
+    /// <returns></returns>
     private float GetRandomSpeed(float min, float max)
     {
         var temp = rnd.Next(0, 2);
@@ -187,7 +197,7 @@ public class TrafficSpawnManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        // Spawn random
+        // Spawn random loop
         InvokeRepeating("SpawnRandom", 0f, SpawnCooldownSeconds);
     }
 

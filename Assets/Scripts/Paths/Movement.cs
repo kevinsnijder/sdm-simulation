@@ -365,43 +365,43 @@ public class Movement : MonoBehaviour
 
             if (currentNode.parent.parent.name == "path0")
             {
-                // Group 0 pad 0
+                // Group 0 path 0
                 if (PathName.Equals("0"))
                 {
-                    // Group 1 pad 1
+                    // Group 1 path 1
                     Path = TrafficSpawnManager.FootRespawnPaths[1].GetComponent<MovementPath>();
                 }
-                // Group 1 pad 0
+                // Group 1 path 0
                 else if (PathName.Equals("1"))
                 {
-                    // Group 0 pad 1
+                    // Group 0 path 1
                     Path = TrafficSpawnManager.FootRespawnPaths[0].GetComponent<MovementPath>();
                 }
-                // Group 3 pad 0
+                // Group 3 path 0
                 else if (PathName.Equals("3"))
                 {
-                    // Group 4 pad 0
+                    // Group 4 path 0
                     Path = TrafficSpawnManager.FootRespawnPaths[3].GetComponent<MovementPath>();
                 }
-                // Group 4 pad 0
+                // Group 4 path 0
                 else if (PathName.Equals("4"))
                 {
-                    // Group 5 pad 1
+                    // Group 5 path 1
                     Path = TrafficSpawnManager.FootRespawnPaths[5].GetComponent<MovementPath>();
                 }
-                // Group 5 pad 0
+                // Group 5 path 0
                 else if (PathName.Equals("5"))
                 {
-                    // Group 4 pad 1
+                    // Group 4 path 1
                     Path = TrafficSpawnManager.FootRespawnPaths[4].GetComponent<MovementPath>();
                 }
             }
             else
             {
-                // Group 4 pad 1
+                // Group 4 path 1
                 if (PathName.Equals("4"))
                 {
-                    // Group 3 pad 1
+                    // Group 3 path 1
                     Path = TrafficSpawnManager.FootRespawnPaths[2].GetComponent<MovementPath>();
                 }
             }
@@ -427,6 +427,7 @@ public class Movement : MonoBehaviour
             CurrentSensorType == SensorType.ThirdSensorNode || 
             CurrentSensorType == SensorType.FourthSensorNode)
         {
+            // Reverse sensors order for path 1
             if (IsTrain && CurrentNode.parent.parent.name != "path0")
             {
                 if (CurrentSensorType == SensorType.FirstSensorNode)
@@ -436,6 +437,7 @@ public class Movement : MonoBehaviour
                 else if (CurrentSensorType == SensorType.SecondSensorNode)
                     SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, SensorStatus.Activated);
             }
+            // Reverse sensors order for path 1
             else if (IsBoat && CurrentNode.parent.parent.name != "path0")
             {
                 if (CurrentSensorType == SensorType.FirstSensorNode)
@@ -467,6 +469,7 @@ public class Movement : MonoBehaviour
             PreviousSensorType == SensorType.FourthSensorNode)
         {
             string currentPath = CurrentNode.parent.parent.parent.parent.name + "/" + PathName;
+            // Reverse sensors order for path 1
             if (IsTrain && Path.PathSequence[CurrentNodeId - 1].parent.parent.name != "path0")
             {
                 if (PreviousSensorType == SensorType.FirstSensorNode)
@@ -476,6 +479,7 @@ public class Movement : MonoBehaviour
                 else if (PreviousSensorType == SensorType.SecondSensorNode)
                     SensorManager.UpdateSensor(currentPath, (int)SensorType.SecondSensorNode, SensorStatus.Deactivated);
             }
+            // Reverse sensors order for path 1
             else if (IsBoat && CurrentNode.parent.parent.name != "path0")
             {
                 if (CurrentSensorType == SensorType.FirstSensorNode)
